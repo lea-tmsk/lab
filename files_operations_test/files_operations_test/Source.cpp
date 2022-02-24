@@ -140,7 +140,10 @@ bool partitioning(const char *name, string *name_f, int *d, int *a, int n)
 	{
 		file[i]->close();
 	}
-	merge(name, name_f, lvl, d, n);
+	if (!merge(name, name_f, lvl, d, n))
+	{
+		return false;
+	}
 	return true;
 }
 
@@ -197,6 +200,7 @@ bool writeResult(string fileName, const char *resultName)
 	}
 	file.close();
 	result.close();
+	return true;
 }
 
 bool merge(const char *name, string *name_f, int lvl, int *d, int n)
@@ -239,7 +243,7 @@ bool merge(const char *name, string *name_f, int lvl, int *d, int n)
 		}
 		else
 		{
-			int x, j;
+			int j;
 			for (int i = 0; i < n; i++)
 			{
 				minInSegments[i] = -1;
@@ -300,7 +304,11 @@ bool merge(const char *name, string *name_f, int lvl, int *d, int n)
 		file[i]->close();
 	}
 
-	writeResult(name_f[0], "result.txt");
+	if (!writeResult(name_f[0], "result.txt"))
+	{
+		return false;
+	}
+	return true;
 }
 
 bool multiphaseSorting(const char *name, int n = 3) //n - кол-во рабочих файлов
@@ -312,7 +320,10 @@ bool multiphaseSorting(const char *name, int n = 3) //n - кол-во рабочих файлов
 	}
 	int *d = new int[n];
 	int *a = new int[n];
-	partitioning(name, name_f, d, a, n);
+	if (!partitioning(name, name_f, d, a, n))
+	{
+		return false;
+	}
 	return true;
 }
 
