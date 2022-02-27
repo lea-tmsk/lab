@@ -29,9 +29,9 @@ bool createFileWithRandomNumbers(const char *name, const int numbersCount, const
 	return true;
 }
 
-bool isFileSorted(const char *name)
+bool isFileSorted(const char *name, int n)
 {
-	ifstream file(name);
+	fstream file(name, ios::in);
 
 	if (!file.is_open())
 	{
@@ -39,12 +39,13 @@ bool isFileSorted(const char *name)
 		return false;
 	}
 
-	int number1, number2;
+	int number1, number2, count = 2;
 	file >> number1;
 	file >> number2;
 
 	while (!file.eof())
 	{
+		count++;
 		if (number1 > number2)
 		{
 			return false;
@@ -53,217 +54,208 @@ bool isFileSorted(const char *name)
 		file >> number2;
 	}
 	file.close();
+	if (count != n)
+	{
+		return false;
+	}
 	return true;
 }
 
-int select(int *d, int *a, int &lvl, int j, int n)
+int select(int j, int *fibonacci, int *fictitiousSegments, int &lvl, int n)
 {
-	if (d[j] < d[j + 1])
+	int temp;
+	if (fictitiousSegments[j] < fictitiousSegments[j + 1])
 	{
 		j++;
 	}
 	else
 	{
-		if (d[j] == 0)
+		if (fictitiousSegments[j] == 0)
 		{
 			lvl++;
-			int temp = a[0];
-			j = 0;
+			temp = fibonacci[0];
 			for (int i = 0; i < n - 1; i++)
 			{
-				d[i] = a[i + 1] - a[i] + temp;
-				a[i] = a[i + 1] + temp;
+				fictitiousSegments[i] = temp + fibonacci[i + 1] - fibonacci[i];
+				fibonacci[i] = temp + fibonacci[i + 1];
 			}
 		}
 		j = 0;
 	}
-	d[j]--;
+	fictitiousSegments[j]--;
 	return j;
 }
 
-bool merge(const char *name, string *name_f, int lvl, int *d, int n);
+bool merging(string *fileName, int *fictitiousSegments, int lvl, int n);
 
-bool partitioning(const char *name, string *name_f, int *d, int *a, int n)
+bool partitioning(const char *mainFileName, string *fileName, int n)
 {
+	int *fibonacci = new int[n];
+	int *fictitiousSegments = new int[n];
 	fstream **file = new fstream*[n];
 	for (int i = 0; i < n - 1; i++)
 	{
-		file[i] = new fstream(name_f[i], ios::out);
+		file[i] = new fstream(fileName[i], ios::out);
 		if (!file[i]->is_open())
 		{
-			cerr << "\ncan't create file[" << i << "]";
+			cerr << "\ncan't create file 'f" << i << ".txt'";
 			return false;
 		}
+		fibonacci[i] = 1;
+		fictitiousSegments[i] = 1;
 	}
-	ifstream mainFile(name);
+	fibonacci[n - 1] = fictitiousSegments[n - 1] = 0;
+	int lvl = 1, j = 0;
+	ifstream mainFile(mainFileName);
 	if (!mainFile.is_open())
 	{
-		cerr << "\ncan't open file: " << name;
+		cerr << "\ncan't open main file";
 		return false;
 	}
-	int lvl = 1, j = 0;
-	a[n - 1] = 0; 
-	d[n - 1] = 0;
-	for (int i = 0; i < n - 1; i++)
-	{
-		a[i] = 1;
-		d[i] = 1;
-	}
-
-	int num1, num2 = 0;
+	int num1, num2;
 	mainFile >> num1;
 	while (!mainFile.eof())
 	{
-		j = select(d, a, lvl, j, n);
+		j = select(j, fibonacci, fictitiousSegments, lvl, n);
 		while (!mainFile.eof())
 		{
-			if (num1 < 0)
-			{
-				num1 = num2;
-			}
-			mainFile >> num2;
 			*file[j] << " " << num1;
+			mainFile >> num2;
 			if (num2 < num1)
 			{
-				num1 = -1;
-				*file[j] << " " << -1;
+				num1 = num2;
 				break;
 			}
 			num1 = num2;
 		}
-		if (mainFile.eof())
-		{
-			*file[j] << " " << -1;
-		}
+		*file[j] << " " << -1;
 	}
 	for (int i = 0; i < n - 1; i++)
 	{
 		file[i]->close();
 	}
-	if (!merge(name, name_f, lvl, d, n))
+	mainFile.close();
+	if (!merging(fileName, fictitiousSegments, lvl, n))
 	{
 		return false;
 	}
 	return true;
 }
 
-int findMin(int *arr, int n)
+bool isArrayNegative(int *array, int n)
 {
-	int min = arr[0], minIndex = 0;
-	for (int i = 1; i < n; i++)
+	for (int i = 0; i < n; i++)
 	{
-		if ((arr[i] < min  || min < 0 ) && arr[i] >= 0)
+		if (array[i] >= 0)
 		{
-			min = arr[i];
+			return false;
+		}
+	}
+	return true;
+}
+
+int findMin(int *array, int n)
+{
+	int min = array[0], minIndex = 0;
+	for (int i = 0; i < n; i++)
+	{
+		if ((min < 0 || array[i] < min) && array[i] >= 0)
+		{
+			min = array[i];
 			minIndex = i;
 		}
 	}
 	return minIndex;
 }
 
-bool isArrayNegative(int *arr, int n)
+void writeResult(string name, const char *resultName)
 {
-	for (int i = 0; i < n; i++)
-	{
-		if (arr[i] >= 0)
-		{
-			return false;
-		}
-	}
-	return true;
-}
-
-bool writeResult(string fileName, const char *resultName)
-{
-	ofstream result(resultName);
-	if (!result.is_open())
-	{
-		cerr << "\ncan't create file";
-		return false;
-	}
-
-	ifstream file(fileName);
+	fstream file(name, ios::in);
 	if (!file.is_open())
 	{
-		cerr << "\ncan't open file[0]";
-		return false;
+		cerr << "\ncan't open file " << name;
+		return;
 	}
-
-	int x;
+	fstream result(resultName, ios::out);
+	if (!result.is_open())
+	{
+		cerr << "\ncan't create file" << resultName;
+		return;
+	}
+	int num;
 	while (!file.eof())
 	{
-		file >> x;
-		if (x >= 0)
+		file >> num;
+		if (num >= 0)
 		{
-			result << x << " ";
+			result << " " << num;
 		}
 	}
 	file.close();
 	result.close();
-	return true;
 }
 
-bool merge(const char *name, string *name_f, int lvl, int *d, int n)
+bool merging(string *fileName, int *fictitiousSegments, int lvl, int n)
 {
 	fstream **file = new fstream*[n];
-	int *minInSegments = new int[n];
-	
 	for (int i = 0; i < n - 1; i++)
 	{
-		file[i] = new fstream(name_f[i], ios::in);
+		file[i] = new fstream(fileName[i], ios::in);
 		if (!file[i]->is_open())
 		{
-			cerr << "\ncan't open file[" << i << "]";
+			cerr << "\ncan't open file 'f" << i << ".txt'";
 			return false;
 		}
 	}
-	file[n - 1] = new fstream(name_f[n - 1], ios::out);
+	file[n - 1] = new fstream(fileName[n - 1], ios::out);
 	if (!file[n - 1]->is_open())
 	{
-		cerr << "\ncan't open file: " << name_f[n - 1];
+		cerr << "\ncan't create file 'f" << n - 1 << ".txt'";
 		return false;
 	}
-	int countRound = 0;
-	while (lvl != 0)
+	while (lvl > 0)
 	{
-		bool allFilesHaveFictitiousSegments = true;
-		for (int i = 0; allFilesHaveFictitiousSegments && i < n - 1; i++) //если во всех файлах есть фиктивные отрезки
+		int *minInSegments = new int[n];
+		
+		while (!file[n - 2]->eof())
 		{
-			if (d[i] == 0)
+			bool allFilesHaveFictitiousSegments = true;
+			for (int i = 0; i < n - 1 && allFilesHaveFictitiousSegments; i++)
 			{
-				allFilesHaveFictitiousSegments = false;
+				if (fictitiousSegments[i] == 0)
+				{
+					allFilesHaveFictitiousSegments = false;
+				}
 			}
-		}
-		if (allFilesHaveFictitiousSegments) //"сливаем" по 1 фиктивному отрезку из каждого файла
-		{
-			for (int i = 0; i < n - 1; i++)
-			{
-				d[i]--;
-			}
-		}
-		else
-		{
-			int j;
-			for (int i = 0; i < n; i++)
-			{
-				minInSegments[i] = -1;
-			}
-			while (!file[n - 2]->eof())
+			if (allFilesHaveFictitiousSegments)
 			{
 				for (int i = 0; i < n - 1; i++)
 				{
-					if (d[i] == 0) //сливаем
+					fictitiousSegments[i]--;
+				}
+				fictitiousSegments[n - 1]++;
+			}
+			else
+			{
+				for (int i = 0; i < n; i++)
+				{
+					minInSegments[i] = -1;
+				}
+
+				for (int i = 0; i < n - 1; i++)
+				{
+					if (fictitiousSegments[i] == 0)
 					{
 						*file[i] >> minInSegments[i];
 					}
 					else
 					{
-						d[i]--; //уменьшаем кол-во фиктивных отрезков в i-том файле 
+						fictitiousSegments[i]--;
 					}
 				}
 				while (!isArrayNegative(minInSegments, n))
 				{
-					j = findMin(minInSegments, n);
+					int j = findMin(minInSegments, n);
 					*file[n - 1] << " " << minInSegments[j];
 					*file[j] >> minInSegments[j];
 				}
@@ -271,59 +263,51 @@ bool merge(const char *name, string *name_f, int lvl, int *d, int n)
 			}
 		}
 		lvl--;
-		file[n - 2]->close();
 		file[n - 1]->close();
-		file[n - 2] = new fstream(name_f[n - 2], ios::out);
-		if (!file[n - 2]->is_open())
-		{
-			cerr << "\ncan't open file: " << name_f[n - 2];
-			return false;
-		}
-		file[n - 1] = new fstream(name_f[n - 1], ios::in);
+		file[n - 2]->close();
+		file[n - 1] = new fstream(fileName[n - 1], ios::in);
 		if (!file[n - 1]->is_open())
 		{
-			cerr << "\ncan't open file: " << name_f[n - 1];
+			cerr << "\ncan't open file " << fileName[n - 1];
+			return false;
+		}
+		file[n - 2] = new fstream(fileName[n - 2], ios::out);
+		if (!file[n - 2]->is_open())
+		{
+			cerr << "\ncan't create file " << fileName[n - 2];
 			return false;
 		}
 
 		fstream *tempFile = file[n - 1]; //двигаем указатели
-		int tempD = d[n - 1];
-		string tempName = name_f[n - 1];
+		int tempD = fictitiousSegments[n - 1];
+		string tempName = fileName[n - 1];
 		for (int i = n - 1; i > 0; i--)
 		{
 			file[i] = file[i - 1];
-			d[i] = d[i - 1];
-			name_f[i] = name_f[i - 1];
+			fictitiousSegments[i] = fictitiousSegments[i - 1];
+			fileName[i] = fileName[i - 1];
 		}
 		file[0] = tempFile;
-		d[0] = tempD;
-		name_f[0] = tempName;
+		fictitiousSegments[0] = tempD;
+		fileName[0] = tempName;
 	}
 	for (int i = 0; i < n; i++)
 	{
 		file[i]->close();
 	}
 
-	if (!writeResult(name_f[0], "result.txt"))
-	{
-		return false;
-	}
+	writeResult(fileName[0], "result.txt");
 	return true;
 }
 
-bool multiphaseSorting(const char *name, int n = 3) //n - кол-во рабочих файлов
+bool multiphaseSorting(const char *mainFileName, int n = 3)
 {
-	string *name_f = new string[n];
+	string *fileName = new string[n];
 	for (int i = 0; i < n; i++)
 	{
-		name_f[i] = "f" + to_string(i) + ".txt";
+		fileName[i] = "f" + to_string(i) + ".txt";
 	}
-	int *d = new int[n];
-	int *a = new int[n];
-	if (!partitioning(name, name_f, d, a, n))
-	{
-		return false;
-	}
+	partitioning(mainFileName, fileName, n);
 	return true;
 }
 
@@ -335,7 +319,7 @@ int createAndSortFile(const char *fileName, const int numbersCount, const int ma
 
 	multiphaseSorting(fileName);
 
-	if (!isFileSorted("result.txt")) {
+	if (!isFileSorted("result.txt", numbersCount)) {
 		return -2;
 	}
 
@@ -344,8 +328,8 @@ int createAndSortFile(const char *fileName, const int numbersCount, const int ma
 
 int main()
 {
-	const int numbersCount = 10;
-	const int maxNumberValue = 2000;
+	const int numbersCount = 1000000;
+	const int maxNumberValue = 100000;
 	for (int i = 0; i < 10; i++)
 	{
 		switch (createAndSortFile("test.txt", numbersCount, maxNumberValue))
@@ -364,3 +348,4 @@ int main()
 		}
 	}
 }
+
