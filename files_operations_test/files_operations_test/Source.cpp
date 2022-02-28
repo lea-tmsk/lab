@@ -143,7 +143,7 @@ bool partitioning(const char *mainFileName, string *fileName, int n)
 	delete[]fictitiousSegments;
 	for (int i = 0; i < n - 1; i++)
 	{
-		delete[]file[i];
+		delete file[i];
 	}
 	delete[]file;
 	return true;
@@ -305,7 +305,7 @@ bool merging(string *fileName, int *fictitiousSegments, int lvl, int n)
 	delete[]minInSegments;
 	for (int i = 0; i < n; i++)
 	{
-		delete[]file[i];
+		delete file[i];
 	}
 	delete[]file;
 	return true;
@@ -332,7 +332,7 @@ int createAndSortFile(const char *fileName, const int numbersCount, const int ma
 		return -1;
 	}
 
-	multiphaseSorting(fileName, 5);
+	multiphaseSorting(fileName);
 
 	if (!isFileSorted("result.txt", numbersCount)) {
 		return -2;
