@@ -99,6 +99,13 @@ bool partitioning(const char *mainFileName, string *fileName, int n)
 		if (!file[i]->is_open())
 		{
 			cerr << "\ncan't create file 'f" << i << ".txt'";
+			delete[]fibonacci;
+			delete[]fictitiousSegments;
+			for (int j = 0; j < i; j++)
+			{
+				delete file[j];
+			}
+			delete[]file;
 			return false;
 		}
 		fibonacci[i] = 1;
@@ -110,6 +117,13 @@ bool partitioning(const char *mainFileName, string *fileName, int n)
 	if (!mainFile.is_open())
 	{
 		cerr << "\ncan't open main file";
+		delete[]fibonacci;
+		delete[]fictitiousSegments;
+		for (int i = 0; i < n - 1; i++)
+		{
+			delete file[i];
+		}
+		delete[]file;
 		return false;
 	}
 	int num1, num2;
@@ -212,6 +226,12 @@ bool merging(string *fileName, int *fictitiousSegments, int lvl, int n)
 		if (!file[i]->is_open())
 		{
 			cerr << "\ncan't open file 'f" << i << ".txt'";
+			for (int j = 0; j < i; j++)
+			{
+				delete file[j];
+			}
+			delete[]file;
+			delete[]minInSegments;
 			return false;
 		}
 	}
@@ -219,6 +239,12 @@ bool merging(string *fileName, int *fictitiousSegments, int lvl, int n)
 	if (!file[n - 1]->is_open())
 	{
 		cerr << "\ncan't create file 'f" << n - 1 << ".txt'";
+		for (int i = 0; i < n; i++)
+		{
+			delete file[i];
+		}
+		delete[]file;
+		delete[]minInSegments;
 		return false;
 	}
 	while (lvl > 0)
@@ -275,12 +301,24 @@ bool merging(string *fileName, int *fictitiousSegments, int lvl, int n)
 		if (!file[n - 1]->is_open())
 		{
 			cerr << "\ncan't open file " << fileName[n - 1];
+			for (int i = 0; i < n; i++)
+			{
+				delete file[i];
+			}
+			delete[]file;
+			delete[]minInSegments;
 			return false;
 		}
 		file[n - 2] = new fstream(fileName[n - 2], ios::out);
 		if (!file[n - 2]->is_open())
 		{
 			cerr << "\ncan't create file " << fileName[n - 2];
+			for (int i = 0; i < n; i++)
+			{
+				delete file[i];
+			}
+			delete[]file;
+			delete[]minInSegments;
 			return false;
 		}
 
