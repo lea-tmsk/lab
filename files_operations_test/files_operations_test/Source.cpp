@@ -139,6 +139,13 @@ bool partitioning(const char *mainFileName, string *fileName, int n)
 	{
 		return false;
 	}
+	delete[]fibonacci;
+	delete[]fictitiousSegments;
+	for (int i = 0; i < n - 1; i++)
+	{
+		delete[]file[i];
+	}
+	delete[]file;
 	return true;
 }
 
@@ -198,6 +205,7 @@ void writeResult(string name, const char *resultName)
 bool merging(string *fileName, int *fictitiousSegments, int lvl, int n)
 {
 	fstream **file = new fstream*[n];
+	int *minInSegments = new int[n];
 	for (int i = 0; i < n - 1; i++)
 	{
 		file[i] = new fstream(fileName[i], ios::in);
@@ -215,8 +223,6 @@ bool merging(string *fileName, int *fictitiousSegments, int lvl, int n)
 	}
 	while (lvl > 0)
 	{
-		int *minInSegments = new int[n];
-		
 		while (!file[n - 2]->eof())
 		{
 			bool allFilesHaveFictitiousSegments = true;
@@ -295,8 +301,13 @@ bool merging(string *fileName, int *fictitiousSegments, int lvl, int n)
 	{
 		file[i]->close();
 	}
-
 	writeResult(fileName[0], "result.txt");
+	delete[]minInSegments;
+	for (int i = 0; i < n; i++)
+	{
+		delete[]file[i];
+	}
+	delete[]file;
 	return true;
 }
 
@@ -307,7 +318,11 @@ bool multiphaseSorting(const char *mainFileName, int n = 3)
 	{
 		fileName[i] = "f" + to_string(i) + ".txt";
 	}
-	partitioning(mainFileName, fileName, n);
+	if (!partitioning(mainFileName, fileName, n))
+	{
+		return false;
+	}
+	delete[]fileName;
 	return true;
 }
 
@@ -317,7 +332,7 @@ int createAndSortFile(const char *fileName, const int numbersCount, const int ma
 		return -1;
 	}
 
-	multiphaseSorting(fileName);
+	multiphaseSorting(fileName, 5);
 
 	if (!isFileSorted("result.txt", numbersCount)) {
 		return -2;
