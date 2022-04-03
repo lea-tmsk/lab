@@ -9,15 +9,23 @@ int main()
 	BinaryTree bt;
 	bt.isEmpty();
 	//bt.addNode(5);
-	int treeSize = 10;
+	int treeSize = 20;
 	for (int i = 0; i < treeSize; i++)
-		bt.addNode(rand() % treeSize);
+		//bt.addNode(rand() % treeSize);
+		bt.addNode(i);
 	/*for (int i = 0; i < bt.treeHeight(); i++)
 	{
 		bt.print(i);
 		std::cout << std::endl;
 	}*/
+	std::cout << "key = 0, index = " << bt.getIndexByKey(0);
+	std::cout << std::endl;
+
 	bt.print();
+	std::cout << std::endl;
+	std::cout << bt.numberOfNodes() << std::endl;
+	BinaryTree bt2(bt);
+	bt2.print();
 	std::cout << std::endl;
 	std::cout << (bt.isTreeBalanced() ? "balanced\n" : "isn't balanced\n");
 	BinaryTree bt1;
@@ -40,13 +48,15 @@ int main()
 
 	bt1.print();
 	std::cout << std::endl;
+	//bt1.newprint();
+	std::cout << std::endl;
 
 	std::cout << (bt1.isTreeBalanced() ? "balanced" : "isn't balanced");
 
 	bt.deleteSubTrees(2);
 	std::cout << std::endl;
 	bt.print();
-
+	std::cout << std::endl;
 	std::cout << bt.numberOfNodes();
 	
 	std::vector<int> keys;
@@ -68,6 +78,6 @@ int main()
 	std::cout << bt.keysSum();
 	std::cout << std::endl;
 	bt.printLeaves();
-
+	bt.deleteTree();
 	return 0;
 }

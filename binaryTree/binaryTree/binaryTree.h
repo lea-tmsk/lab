@@ -1,5 +1,6 @@
 #pragma once
-#include <random>
+#include <vector>
+#include <string>
 
 class BinaryTree
 {
@@ -38,6 +39,7 @@ public:
 	int maxKey(const int nodeIndex = 0) const;
 	int keysSum(const int nodeIndex = 0) const;
 	int findKeyLevel(const int key, const int nodeIndex = 0) const;
+	int getIndexByKey(const int key, const int nodeIndex = 0) const;
 	int getKeyByIndex(const int nodeIndex = 0) const;
 	bool deleteNode(const int nodeIndex = 0);
 	bool deleteNodeKey(const int key, const int nodeIndex = 0);
@@ -64,12 +66,13 @@ private:
 	int maxKey(Node* subTreeRoot) const;
 	int keysSum(Node* subTreeRoot) const;
 	int findKeyLevel(Node* subTreeRoot, const int key) const;
+	int getIndexByKey(Node* subTreeRoot, const int key) const;
 	int getKeyByIndex(Node* subTreeRoot) const;
 	void copyTree(const Node* subTreeRoot);
 	void copyNodes(const Node* subTreeRoot, Node* copyRoot);
 	bool deleteNode(Node* subTreeRoot);
 	void deleteTree(Node* subTreeRoot);
-	void printLevel(Node* subTreeRoot, const int level, int currentLevel = 0) const;
+	void printLevel(Node* subTreeRoot, const int level) const;
 	void printLeaves(Node* subTreeRoot) const;
 
 	Node* findParent(Node* child) const;
