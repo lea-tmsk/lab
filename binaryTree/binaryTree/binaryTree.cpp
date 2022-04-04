@@ -546,6 +546,9 @@ bool BinaryTree::deleteNode(Node* subTreeRoot)
 			delete subTreeRoot;
 			return true;
 		}
+		m_root = nullptr;
+		delete subTreeRoot;
+		return true;
 	}
 
 	if (!subTreeRoot->rightChild && !subTreeRoot->leftChild)
