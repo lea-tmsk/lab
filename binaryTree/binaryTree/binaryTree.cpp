@@ -1,9 +1,7 @@
 #include "binaryTree.h"
-//#include <vector>
 #include <iostream>
 #include <cassert>
 #include <random>
-//#include <string>
 
 int BinaryTree::Node::numberOfChildren() const
 {

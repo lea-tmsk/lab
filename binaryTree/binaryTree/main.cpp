@@ -1,6 +1,5 @@
 #include "binaryTree.h"
 #include <iostream>
-#include <vector>
 #include <time.h>
 
 int main()
