@@ -427,7 +427,7 @@ int BinaryTree::findKeyLevel(Node* subTreeRoot, const int key) const
 {
 	if (subTreeRoot == nullptr)
 	{
-		return 0;
+		return -1;
 	}
 	int level = 1;
 	if (subTreeRoot->key == key)
@@ -466,7 +466,7 @@ int BinaryTree::findKeyLevel(Node* subTreeRoot, const int key) const
 		}
 		currentLevelNodes.swap(nextLevelNodes);
 	}
-	return 0;
+	return -1;
 }
 
 void BinaryTree::copyTree(const Node* subTreeRoot)
@@ -703,7 +703,7 @@ void BinaryTree::printLevel(Node* subTreeRoot, const int level) const
 	
 	if (subTreeRoot == nullptr) {
 		if (subTreeRoot == m_root) {
-			cout << "Tree is empty" << endl;
+			std::cerr << "\nTree is empty" << endl;
 		}
 		return;
 	}
@@ -782,16 +782,14 @@ void BinaryTree::printLevel(Node* subTreeRoot, const int level) const
 			nextLevelMissingNodes.push_back(node->rightChild ? 0 : 1);
 			index++;
 		}
-		if (index < currentMissingNodes.size())
+		while (index < currentMissingNodes.size())
 		{
-			for (; index < currentMissingNodes.size(); index++)
+			if (level == currentLevel)
 			{
-				if (level == currentLevel)
-				{
-					cout << "x  ";
-				}
-				nextLevelMissingNodes.push_back(1);
+				cout << "x  ";
 			}
+			nextLevelMissingNodes.push_back(1);
+			index++;
 		}
 		currentLevel++;
 		currentMissingNodes.clear();
@@ -848,7 +846,12 @@ void BinaryTree::printLeaves(Node* subTreeRoot) const
 
 void BinaryTree::print() const
 {
+	std::cout << std::endl;
 	int height = treeHeight();
+	if (!height)
+	{
+		std::cerr << "\nTree is empty";
+	}
 	for (int i = 0; i < height; i++)
 	{
 		printLevel(i);
@@ -998,6 +1001,7 @@ void BinaryTree::operator=(const BinaryTree& bt)
 {
 	if (&bt == this)
 	{
+		std::cerr << "\nThe same tree";
 		return;
 	}
 	copyTree(bt.m_root);

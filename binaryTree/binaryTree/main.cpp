@@ -5,79 +5,57 @@
 
 int main()
 {
+	using std::cout;
+	using std::endl;
 	srand(time(0));
+
 	BinaryTree bt;
-	bt.isEmpty();
-	//bt.addNode(5);
-	int treeSize = 20;
+	int treeSize = 15;
 	for (int i = 0; i < treeSize; i++)
-		//bt.addNode(rand() % treeSize);
 		bt.addNode(i);
-	/*for (int i = 0; i < bt.treeHeight(); i++)
-	{
-		bt.print(i);
-		std::cout << std::endl;
-	}*/
-	std::cout << "key = 0, index = " << bt.getIndexByKey(0);
-	std::cout << std::endl;
 
 	bt.print();
-	std::cout << std::endl;
-	std::cout << bt.numberOfNodes() << std::endl;
-	BinaryTree bt2(bt);
-	bt2.print();
-	std::cout << std::endl;
-	std::cout << (bt.isTreeBalanced() ? "balanced\n" : "isn't balanced\n");
-	BinaryTree bt1;
-	//bt1 = bt;
-//	bt1.print();
-	//for (int i = 0; i < 10000; i++)
-	//{
-	//	bt1 = bt;
-	//}
-	//for (int i = 0; i < bt1.treeHeight(); i++)
-	//{
-	//	bt1.print(i);
-	//	std::cout << std::endl;
-	//}
 
-	bt1.addNode(5);
-	bt1.addLeft(4, 0);
-	bt1.addLeft(3, 1);
-	bt1.addLeft(2, 2);
-
+	cout << endl;
+	cout << "index by key 6: " << bt.getIndexByKey(6) << endl;
+	cout << "key by index 3: " << bt.getKeyByIndex(3) << endl;
+	cout << "delete node(index 21): " << (bt.deleteNode(21) ? "true" : "false") << endl;
+	cout << "delete node(index 5): " << (bt.deleteNode(5) ? "true" : "false") << endl;
+	bt.print();
+	BinaryTree bt1(bt);
 	bt1.print();
-	std::cout << std::endl;
-	//bt1.newprint();
-	std::cout << std::endl;
-
-	std::cout << (bt1.isTreeBalanced() ? "balanced" : "isn't balanced");
-
-	bt.deleteSubTrees(2);
-	std::cout << std::endl;
-	bt.print();
-	std::cout << std::endl;
-	std::cout << bt.numberOfNodes();
-	
-	std::vector<int> keys;
-	keys = bt.treeKeysVector(5);
-
-	std::cout << std::endl;
+	cout << "\nbt1 delete subtrees: ";
+	bt1.deleteSubTrees(2);
+	bt1.print();
+	cout << "is bt1 empty? " << (bt1.isEmpty() ? "true" : "false") << endl;
+	bt1.deleteTree();
+	cout << "is bt1 empty(after deleting)? " << (bt1.isEmpty() ? "true" : "false") << endl;
+	bt1 = bt.copySubTree(1);
+	bt1.print();
+	cout << "bt1 height: " << bt1.treeHeight() << endl;
+	cout << "bt1 amount of nodes: " << bt1.numberOfNodes() << endl;
+	cout << "bt1 max key: " << bt1.maxKey() << endl;
+	cout << "bt1 min key: " << bt1.minKey() << endl;
+	cout << "bt1 add node, key = 21: " << (bt1.addNode(21) ? "true" : "false");
+	bt1.print();
+	cout << "bt1 delete node, key = 21: " << (bt1.deleteNodeKey(21) ? "true" : "false") << endl;
+	cout << "bt1 delete node, key = 26: " << (bt1.deleteNodeKey(26) ? "true" : "false") << endl;
+	bt1.print();
+	cout << "is bt1 balanced? " << (bt1.isTreeBalanced() ? "true" : "false") << endl;
+	cout << "bt1 keys sum: " << bt1.keysSum() << endl;
+	cout << "bt1 key 5 level: " << bt1.findKeyLevel(5) << endl;
+	cout << "bt1 key 21 level: " << bt1.findKeyLevel(21) << endl;
+	std::vector<int> keys = bt1.treeKeysVector();
 	for (int x : keys)
 	{
-		std::cout << x << " ";
+		cout << x << " ";
 	}
+	cout << endl;
+	cout << "bt1 print leaves: " << endl;
+	bt1.printLeaves();
+	bt = bt1;
+	bt.print();
+	bt = bt;
 
-	std::cout << std::endl;
-	std::cout << bt.treeHeight();
-	std::cout << std::endl;
-	std::cout << bt.minKey();
-	std::cout << std::endl;
-	std::cout << bt.maxKey();
-	std::cout << std::endl;
-	std::cout << bt.keysSum();
-	std::cout << std::endl;
-	bt.printLeaves();
-	bt.deleteTree();
 	return 0;
 }

@@ -77,10 +77,10 @@ private:
 
 	Node* findParent(Node* child) const;
 	Node* findKey(Node* subTreeRoot, const int key) const;
-
 	Node* node(const int nodeIndex) const;
 	Node* node(const int subTreeRootIndex, const int nodeIndex) const;
 	Node* node(Node* subTreeRoot, int nodeIndex) const;
+
 	Node* m_root = nullptr;
 };
 
