@@ -697,6 +697,29 @@ void BinaryTree::printLevel(const int level, const int nodeIndex) const
 	printLevel(node(nodeIndex), level);
 }
 
+void BinaryTree::printLeavesRec(Node* subTreeRoot) const
+{
+	if (subTreeRoot == nullptr)
+	{
+		return;
+	}
+	
+	if (subTreeRoot->leftChild)
+	{
+		printLeavesRec(subTreeRoot->leftChild);
+	}
+
+	if (subTreeRoot->rightChild)
+	{
+		printLeavesRec(subTreeRoot->rightChild);
+	}
+
+	if (!subTreeRoot->numberOfChildren())
+	{
+		std::cout << subTreeRoot->getKey() << " ";
+	}
+}
+
 void BinaryTree::printLevel(Node* subTreeRoot, const int level) const
 {
 	using std::cout;

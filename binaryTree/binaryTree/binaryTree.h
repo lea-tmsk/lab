@@ -74,6 +74,7 @@ private:
 	void deleteTree(Node* subTreeRoot);
 	void printLevel(Node* subTreeRoot, const int level) const;
 	void printLeaves(Node* subTreeRoot) const;
+	void printLeavesRec(Node* subTreeRoot) const;
 
 	Node* findParent(Node* child) const;
 	Node* findKey(Node* subTreeRoot, const int key) const;
