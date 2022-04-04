@@ -50,7 +50,7 @@ public:
 	void print() const;
 
 	Node* findKey(const int key, const int nodeIndex = 0) const;
-	void operator=(const BinaryTree& bt);
+	BinaryTree& operator=(const BinaryTree& bt);
 
 private:
 	bool addNode(Node* subTreeRoot, const int key);

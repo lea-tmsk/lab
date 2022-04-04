@@ -1021,14 +1021,15 @@ BinaryTree::Node* BinaryTree::findKey(Node* subTreeRoot, const int key) const
 	return nullptr;
 }
 
-void BinaryTree::operator=(const BinaryTree& bt)
+BinaryTree& BinaryTree::operator=(const BinaryTree& bt)
 {
 	if (&bt == this)
 	{
 		std::cerr << "\nThe same tree";
-		return;
+		return *this;
 	}
 	copyTree(bt.m_root);
+	return *this;
 }
 
 BinaryTree::Node* BinaryTree::node(const int nodeIndex) const
