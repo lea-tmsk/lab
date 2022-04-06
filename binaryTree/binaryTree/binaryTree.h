@@ -52,7 +52,7 @@ public:
 	Node* findKey(const int key, const int nodeIndex = 0) const;
 	BinaryTree& operator=(const BinaryTree& bt);
 
-private:
+protected:
 	bool addNode(Node* subTreeRoot, const int key);
 	bool addLeft(Node* subTreeRoot, const int key);
 	bool addRight(Node* subTreeRoot, const int key);
@@ -72,7 +72,7 @@ private:
 	void copyNodes(const Node* subTreeRoot, Node* copyRoot);
 	bool deleteNode(Node* subTreeRoot);
 	void deleteTree(Node* subTreeRoot);
-	void printLevel(Node* subTreeRoot, const int level) const;
+	void printLevel(Node* subTreeRoot, const int level, const int currentLevel) const;
 	void printLeaves(Node* subTreeRoot) const;
 	void printLeavesRec(Node* subTreeRoot) const;
 
