@@ -125,9 +125,11 @@
   <ItemGroup>
     <ClCompile Include="binaryTree.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="searchTree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="binaryTree.h" />
+    <ClInclude Include="searchTree.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
