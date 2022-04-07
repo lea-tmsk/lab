@@ -24,7 +24,7 @@ public:
 
 	BinaryTree() = default;
 	BinaryTree(const BinaryTree& copy);
-	~BinaryTree();
+	virtual ~BinaryTree();
 
 	virtual bool addNode(const int key, const int nodeIndex = 0);
 	bool addLeft(const int key, const int nodeIndex = 0);
@@ -35,14 +35,14 @@ public:
 	int treeHeight(const int nodeIndex = 0) const;
 	std::vector<int> treeKeysVector(const int nodeIndex = 0) const;
 	BinaryTree copySubTree(const int nodeIndex) const;
-	int minKey(const int nodeIndex = 0) const;
-	int maxKey(const int nodeIndex = 0) const;
+	virtual int getMin(const int nodeIndex = 0) const;
+	virtual int getMax(const int nodeIndex = 0) const;
 	int keysSum(const int nodeIndex = 0) const;
-	int findKeyLevel(const int key, const int nodeIndex = 0) const;
+	virtual int getLevelByKey(const int key, const int nodeIndex = 0) const;
 	virtual int getIndexByKey(const int key, const int nodeIndex = 0) const;
 	int getKeyByIndex(const int nodeIndex = 0) const;
 	bool deleteNode(const int nodeIndex = 0);
-	bool deleteNodeKey(const int key, const int nodeIndex = 0);
+	virtual bool deleteNodeByKey(const int key, const int nodeIndex = 0);
 	void deleteTree(const int nodeIndex = 0);
 	void deleteSubTrees(const int nodeIndex = 0);
 	void printLevel(const int level, const int nodeIndex = 0) const;
@@ -62,10 +62,10 @@ protected:
 	int treeHeight(Node* subTreeRoot) const;
 	std::vector<int> treeKeysVector(Node* subTreeRoot) const;
 	BinaryTree copySubTree(const Node* subTreeRoot) const;
-	int minKey(Node* subTreeRoot) const;
-	int maxKey(Node* subTreeRoot) const;
+	virtual int getMin(Node* subTreeRoot) const;
+	virtual int getMax(Node* subTreeRoot) const;
 	int keysSum(Node* subTreeRoot) const;
-	int findKeyLevel(Node* subTreeRoot, const int key) const;
+	virtual int getLevelByKey(Node* subTreeRoot, const int key) const;
 	int getIndexByKey(Node* subTreeRoot, const int key) const;
 	int getKeyByIndex(Node* subTreeRoot) const;
 	void copyTree(const Node* subTreeRoot);

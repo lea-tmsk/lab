@@ -149,6 +149,7 @@ bool SearchTree::deleteNodeByIndex(Node* subTreeRoot, const int deleteIndex)
 	{
 		return deleteRightOneChild(parent, subTreeRoot);
 	}
+	return false;
 }
 
 int SearchTree::getIndexByKey(const int key, const int nodeIndex) const
