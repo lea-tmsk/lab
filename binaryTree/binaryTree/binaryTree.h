@@ -26,7 +26,7 @@ public:
 	BinaryTree(const BinaryTree& copy);
 	~BinaryTree();
 
-	bool addNode(const int key, const int nodeIndex = 0);
+	virtual bool addNode(const int key, const int nodeIndex = 0);
 	bool addLeft(const int key, const int nodeIndex = 0);
 	bool addRight(const int key, const int nodeIndex = 0);
 	bool isEmpty(const int nodeIndex = 0) const;
@@ -39,7 +39,7 @@ public:
 	int maxKey(const int nodeIndex = 0) const;
 	int keysSum(const int nodeIndex = 0) const;
 	int findKeyLevel(const int key, const int nodeIndex = 0) const;
-	int getIndexByKey(const int key, const int nodeIndex = 0) const;
+	virtual int getIndexByKey(const int key, const int nodeIndex = 0) const;
 	int getKeyByIndex(const int nodeIndex = 0) const;
 	bool deleteNode(const int nodeIndex = 0);
 	bool deleteNodeKey(const int key, const int nodeIndex = 0);
@@ -53,7 +53,7 @@ public:
 	BinaryTree& operator=(const BinaryTree& bt);
 
 protected:
-	bool addNode(Node* subTreeRoot, const int key);
+	virtual bool addNode(Node* subTreeRoot, const int key);
 	bool addLeft(Node* subTreeRoot, const int key);
 	bool addRight(Node* subTreeRoot, const int key);
 	bool isEmpty(const Node* subTreeRoot) const;

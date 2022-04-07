@@ -30,20 +30,21 @@ int SearchTree::getMax(Node* subTreeRoot) const
 	return temp->getKey();
 }
 
-void SearchTree::addNode(const int key, const int nodeIndex)
+bool SearchTree::addNode(const int key, const int nodeIndex)
 {
-	addNode(node(nodeIndex), key);
+	return addNode(node(nodeIndex), key);
 }
 
-void SearchTree::addNode(Node* node, const int key)
+bool SearchTree::addNode(Node* node, const int key)
 {
 	if (node == nullptr)
 	{
 		if (node == m_root)
 		{
 			m_root = new Node(key);
+			return true;
 		}
-		return;
+		return false;
 	}
 	Node* temp = m_root;
 	while (true)
@@ -57,7 +58,7 @@ void SearchTree::addNode(Node* node, const int key)
 			else if (key < temp->getKey())
 			{
 				temp->leftChild = new Node(key);
-				return;
+				return true;
 			}
 		}
 
@@ -70,10 +71,11 @@ void SearchTree::addNode(Node* node, const int key)
 			else if (key >= temp->getKey())
 			{
 				temp->rightChild = new Node(key);
-				return;
+				return true;
 			}
 		}
 	}
+	return false;
 }
 
 bool SearchTree::deleteNodeByKey(const int key, const int nodeIndex)
