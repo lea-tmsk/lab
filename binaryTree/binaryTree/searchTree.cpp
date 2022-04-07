@@ -1,10 +1,5 @@
 #include "searchTree.h"
 
-int SearchTree::getMin(const int nodeIndex) const
-{
-	return getMin(node(nodeIndex));
-}
-
 int SearchTree::getMin(Node* subTreeRoot) const
 {
 	Node* temp = subTreeRoot;
@@ -15,11 +10,6 @@ int SearchTree::getMin(Node* subTreeRoot) const
 	return temp->getKey();
 }
 
-int SearchTree::getMax(const int nodeIndex) const
-{
-	return getMax(node(nodeIndex));
-}
-
 int SearchTree::getMax(Node* subTreeRoot) const
 {
 	Node* temp = subTreeRoot;
@@ -28,11 +18,6 @@ int SearchTree::getMax(Node* subTreeRoot) const
 		temp = temp->rightChild;
 	}
 	return temp->getKey();
-}
-
-bool SearchTree::addNode(const int key, const int nodeIndex)
-{
-	return addNode(node(nodeIndex), key);
 }
 
 bool SearchTree::addNode(Node* node, const int key)
@@ -78,45 +63,33 @@ bool SearchTree::addNode(Node* node, const int key)
 	return false;
 }
 
-bool SearchTree::deleteNodeByKey(const int key, const int nodeIndex)
-{
-	return deleteNodeByIndex(node(nodeIndex), getIndexByKey(key, nodeIndex));
-}
-
 bool SearchTree::deleteNodeByKey(Node* subTreeRoot, const int key)
 {
-	return deleteNodeByIndex(subTreeRoot, getIndexByKey(subTreeRoot, key));
+	return deleteNodeByIndex(getIndexByKey(subTreeRoot, key));
 }
 
-bool SearchTree::deleteNodeByIndex(const int deleteIndex, const int nodeIndex)
-{
-	return deleteNodeByIndex(node(nodeIndex), deleteIndex);
-}
-
-bool SearchTree::deleteNodeByIndex(Node* subTreeRoot, const int deleteIndex)
+bool SearchTree::deleteNodeByIndex(Node* subTreeRoot)
 {
 	if (subTreeRoot == nullptr)
 	{
 		return false;
 	}
 
-	Node* temp = node(subTreeRoot, deleteIndex);
-
-	if (temp == nullptr)
+	if (subTreeRoot == nullptr)
 	{
 		return false;
 	}
 
-	if (temp == m_root)
+	if (subTreeRoot == m_root)
 	{
 		return deleteRoot();
 	}
 
-	Node* parent = findParent(temp);
+	Node* parent = findParent(subTreeRoot);
 
-	if (!temp->numberOfChildren())
+	if (!subTreeRoot->numberOfChildren())
 	{
-		if (parent->leftChild == temp)
+		if (parent->leftChild == subTreeRoot)
 		{
 			parent->leftChild = nullptr;
 		}
@@ -124,47 +97,32 @@ bool SearchTree::deleteNodeByIndex(Node* subTreeRoot, const int deleteIndex)
 		{
 			parent->rightChild = nullptr;
 		}
-		delete temp;
+		delete subTreeRoot;
 		return true;
 	}
 
-	if (temp->numberOfChildren() == 2)
+	if (subTreeRoot->numberOfChildren() == 2)
 	{
-		if (parent->leftChild == temp)
+		if (parent->leftChild == subTreeRoot)
 		{
-			return deleteLeftBothChildren(parent, subTreeRoot);
+			return deleteLeftBothChildren(parent);
 		}
 		else
 		{
-			return deleteRightBothChildren(parent, subTreeRoot);
+			return deleteRightBothChildren(parent);
 		}
 	}
 
-	if (parent->leftChild == temp)
+	if (parent->leftChild == subTreeRoot)
 	{
-		return deleteLeftOneChild(parent, subTreeRoot);
+		return deleteLeftOneChild(parent);
 	}
 
-	if (parent->rightChild == temp)
+	if (parent->rightChild == subTreeRoot)
 	{
-		return deleteRightOneChild(parent, subTreeRoot);
+		return deleteRightOneChild(parent);
 	}
 	return false;
-}
-
-int SearchTree::getIndexByKey(const int key, const int nodeIndex) const
-{
-	return BinaryTree::getIndexByKey(key, nodeIndex);
-}
-
-int SearchTree::getIndexByKey(Node* subTreeRoot, const int key) const
-{
-	return BinaryTree::getIndexByKey(subTreeRoot, key);
-}
-
-int SearchTree::getLevelByKey(const int key, const int nodeIndex) const
-{
-	return getLevelByKey(node(nodeIndex), key);
 }
 
 int SearchTree::getLevelByKey(Node* subTreeRoot, const int key) const
@@ -233,11 +191,11 @@ bool SearchTree::deleteRoot()
 	return true;
 }
 
-bool SearchTree::deleteLeftBothChildren(Node* parent, Node* subTreeRoot)
+bool SearchTree::deleteLeftBothChildren(Node* parent)
 {
 	Node* temp = parent->leftChild;
 	parent->leftChild = temp->rightChild;
-	Node* place = subTreeRoot;
+	Node* place = parent;
 
 	while (place->leftChild)
 	{
@@ -249,11 +207,11 @@ bool SearchTree::deleteLeftBothChildren(Node* parent, Node* subTreeRoot)
 	return true;
 }
 
-bool SearchTree::deleteRightBothChildren(Node* parent, Node* subTreeRoot)
+bool SearchTree::deleteRightBothChildren(Node* parent)
 {
 	Node* temp = parent->rightChild;
 	parent->rightChild = temp->leftChild;
-	Node* place = subTreeRoot;
+	Node* place = parent;
 
 	while (place->rightChild)
 	{
@@ -265,7 +223,7 @@ bool SearchTree::deleteRightBothChildren(Node* parent, Node* subTreeRoot)
 	return true;
 }
 
-bool SearchTree::deleteLeftOneChild(Node* parent, Node* subTreeRoot)
+bool SearchTree::deleteLeftOneChild(Node* parent)
 {
 	Node* temp = parent->leftChild;
 
@@ -281,7 +239,7 @@ bool SearchTree::deleteLeftOneChild(Node* parent, Node* subTreeRoot)
 	return true;
 }
 
-bool SearchTree::deleteRightOneChild(Node* parent, Node* subTreeRoot)
+bool SearchTree::deleteRightOneChild(Node* parent)
 {
 	Node* temp = parent->rightChild;
 

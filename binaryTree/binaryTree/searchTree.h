@@ -9,13 +9,13 @@ public:
 	SearchTree(const SearchTree& copy) : BinaryTree(copy) {};
 	~SearchTree() = default;
 
-	int getMin(const int nodeIndex = 0) const override;
-	int getMax(const int nodeIndex = 0) const override;
-	bool addNode(const int key, const int nodeIndex = 0) override;
-	bool deleteNodeByKey(const int key, const int nodeIndex = 0) override;
-	bool deleteNodeByIndex(const int deleteIndex, const int nodeIndex = 0);
-	int getIndexByKey(const int key, const int nodeIndex = 0) const;
-	int getLevelByKey(const int key, const int nodeIndex = 0) const override;
+	using BinaryTree::getMin;
+	using BinaryTree::getMax;
+	using BinaryTree::addNode;
+	using BinaryTree::deleteNodeByKey;
+	using BinaryTree::deleteNodeByIndex;
+	using BinaryTree::getIndexByKey;
+	using BinaryTree::getLevelByKey;
 
 	SearchTree& operator=(const SearchTree& other);
 
@@ -23,15 +23,14 @@ private:
 	int getMin(Node* subTreeRoot) const override;
 	int getMax(Node* subTreeRoot) const override;
 	bool addNode(Node* node, const int key) override;
-	bool deleteNodeByKey(Node* subTreeRoot, const int key);
-	bool deleteNodeByIndex(Node* subTreeRoot, const int deleteIndex);
-	int getIndexByKey(Node* subTreeRoot, const int key) const;
+	bool deleteNodeByKey(Node* subTreeRoot, const int key) override;
+	bool deleteNodeByIndex(Node* subTreeRoot) override;
 	int getLevelByKey(Node* subTreeRoot, const int key) const override;
 
 	bool deleteRoot();
-	bool deleteLeftBothChildren(Node* parent, Node* subTreeRoot);
-	bool deleteRightBothChildren(Node* parent, Node* subTreeRoot);
-	bool deleteLeftOneChild(Node* parent, Node* subTreeRoot);
-	bool deleteRightOneChild(Node* parent, Node* subTreeRoot);
+	bool deleteLeftBothChildren(Node* parent);
+	bool deleteRightBothChildren(Node* parent);
+	bool deleteLeftOneChild(Node* parent);
+	bool deleteRightOneChild(Node* parent);
 };
 
