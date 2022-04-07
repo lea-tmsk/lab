@@ -18,6 +18,7 @@ public:
 	int getLevelByKey(const int key, const int nodeIndex = 0) const;
 
 	SearchTree& operator=(const SearchTree& other);
+
 private:
 	int getMin(Node* subTreeRoot) const;
 	int getMax(Node* subTreeRoot) const;

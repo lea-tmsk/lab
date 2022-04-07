@@ -5,6 +5,16 @@ int SearchTree::getMin(const int nodeIndex) const
 	return getMin(node(nodeIndex));
 }
 
+int SearchTree::getMin(Node* subTreeRoot) const
+{
+	Node* temp = subTreeRoot;
+	while (temp->leftChild)
+	{
+		temp = temp->leftChild;
+	}
+	return temp->getKey();
+}
+
 int SearchTree::getMax(const int nodeIndex) const
 {
 	return getMax(node(nodeIndex));
@@ -20,26 +30,56 @@ int SearchTree::getMax(Node* subTreeRoot) const
 	return temp->getKey();
 }
 
-int SearchTree::getMin(Node* subTreeRoot) const
-{
-	Node* temp = subTreeRoot;
-	while (temp->leftChild)
-	{
-		temp = temp->leftChild;
-	}
-	return temp->getKey();
-}
-
 void SearchTree::addNode(const int key, const int nodeIndex)
 {
 	addNode(node(nodeIndex), key);
+}
+
+void SearchTree::addNode(Node* node, const int key)
+{
+	if (node == nullptr)
+	{
+		if (node == m_root)
+		{
+			m_root = new Node(key);
+		}
+		return;
+	}
+	Node* temp = m_root;
+	while (true)
+	{
+		while (key < temp->getKey())
+		{
+			if (temp->leftChild)
+			{
+				temp = temp->leftChild;
+			}
+			else if (key < temp->getKey())
+			{
+				temp->leftChild = new Node(key);
+				return;
+			}
+		}
+
+		while (key >= temp->getKey())
+		{
+			if (temp->rightChild)
+			{
+				temp = temp->rightChild;
+			}
+			else if (key >= temp->getKey())
+			{
+				temp->rightChild = new Node(key);
+				return;
+			}
+		}
+	}
 }
 
 bool SearchTree::deleteNodeByKey(const int key, const int nodeIndex)
 {
 	return deleteNodeByIndex(node(nodeIndex), getIndexByKey(key, nodeIndex));
 }
-
 
 bool SearchTree::deleteNodeByKey(Node* subTreeRoot, const int key)
 {
@@ -150,47 +190,6 @@ int SearchTree::getLevelByKey(Node* subTreeRoot, const int key) const
 	}
 
 	return -1;
-}
-
-void SearchTree::addNode(Node* node, const int key)
-{
-	if (node == nullptr)
-	{
-		if (node == m_root)
-		{
-			m_root = new Node(key);
-		}
-		return;
-	}
-	Node* temp = m_root;
-	while (true)
-	{
-		while (key < temp->getKey())
-		{
-			if (temp->leftChild)
-			{
-				temp = temp->leftChild;
-			}
-			else if (key < temp->getKey())
-			{
-				temp->leftChild = new Node(key);
-				return;
-			}
-		}
-
-		while (key >= temp->getKey())
-		{
-			if (temp->rightChild)
-			{
-				temp = temp->rightChild;
-			}
-			else if (key >= temp->getKey())
-			{
-				temp->rightChild = new Node(key);
-				return;
-			}
-		}
-	}
 }
 
 bool SearchTree::deleteRoot()
