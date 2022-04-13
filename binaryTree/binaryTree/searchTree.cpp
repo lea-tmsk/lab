@@ -136,24 +136,49 @@ int SearchTree::getLevelByKey(Node* subTreeRoot, const int key) const
 	}
 	Node* temp = subTreeRoot;
 	int level = 1;
-	while (key < temp->getKey() && temp->leftChild)
+	while (temp)
 	{
-		temp = temp->leftChild;
-		level++;
+		while (key < temp->getKey())
+		{
+			temp = temp->leftChild;
+			if (temp == nullptr)
+			{
+				return -1;
+			}
+			level++;
+		}
+		
+		while (key > temp->getKey())
+		{
+			temp = temp->rightChild;
+			if (temp == nullptr)
+			{
+				return -1;
+			}
+			level++;
+		}
+		if (key == temp->getKey())
+		{
+			return level;
+		}
 	}
-
-	while (key > temp->getKey() && temp->rightChild)
-	{
-		temp = temp->rightChild;
-		level++;
-	}
-
-	if (key == temp->getKey())
-	{
-		return level;
-	}
-
 	return -1;
+}
+
+SearchTree SearchTree::copySubTree(const int nodeIndex) const
+{
+	return copySubTree(node(nodeIndex));
+}
+
+SearchTree SearchTree::copySubTree(Node* subTreeRoot) const
+{
+	if (subTreeRoot == nullptr)
+	{
+		return SearchTree();
+	}
+	SearchTree st;
+	st.copyTree(subTreeRoot);
+	return st;
 }
 
 bool SearchTree::deleteRoot()

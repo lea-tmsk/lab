@@ -17,6 +17,7 @@ public:
 	using BinaryTree::getIndexByKey;
 	using BinaryTree::getLevelByKey;
 
+	SearchTree copySubTree(const int nodeIndex = 0) const;
 	SearchTree& operator=(const SearchTree& other);
 
 private:
@@ -26,6 +27,7 @@ private:
 	bool deleteNodeByKey(Node* subTreeRoot, const int key) override;
 	bool deleteNodeByIndex(Node* subTreeRoot) override;
 	int getLevelByKey(Node* subTreeRoot, const int key) const override;
+	SearchTree copySubTree(Node* subTreeRoot) const;
 
 	bool deleteRoot();
 	bool deleteLeftBothChildren(Node* parent);
