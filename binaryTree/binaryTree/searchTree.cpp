@@ -1,7 +1,9 @@
 #include "searchTree.h"
+#include <cassert>
 
 int SearchTree::getMin(Node* subTreeRoot) const
 {
+	assert(subTreeRoot != nullptr && "getMin: subTreeRoot was nullptr");
 	Node* temp = subTreeRoot;
 	while (temp->leftChild)
 	{
@@ -12,6 +14,7 @@ int SearchTree::getMin(Node* subTreeRoot) const
 
 int SearchTree::getMax(Node* subTreeRoot) const
 {
+	assert(subTreeRoot != nullptr && "getMax: subTreeRoot was nullptr");
 	Node* temp = subTreeRoot;
 	while (temp->rightChild)
 	{
