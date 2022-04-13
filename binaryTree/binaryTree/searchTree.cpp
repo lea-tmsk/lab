@@ -34,7 +34,7 @@ bool SearchTree::addNode(Node* node, const int key)
 		}
 		return false;
 	}
-	Node* temp = m_root;
+	Node* temp = node;
 	while (true)
 	{
 		while (key < temp->getKey())
@@ -73,11 +73,6 @@ bool SearchTree::deleteNodeByKey(Node* subTreeRoot, const int key)
 
 bool SearchTree::deleteNodeByIndex(Node* subTreeRoot)
 {
-	if (subTreeRoot == nullptr)
-	{
-		return false;
-	}
-
 	if (subTreeRoot == nullptr)
 	{
 		return false;
