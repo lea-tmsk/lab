@@ -27,8 +27,6 @@ public:
 	virtual ~BinaryTree();
 
 	bool addNode(const int key, const int nodeIndex = 0);
-	bool addLeft(const int key, const int nodeIndex = 0);
-	bool addRight(const int key, const int nodeIndex = 0);
 	bool isEmpty(const int nodeIndex = 0) const;
 	bool isTreeBalanced(const int nodeIndex = 0) const;
 	int numberOfNodes(const int nodeIndex = 0) const;

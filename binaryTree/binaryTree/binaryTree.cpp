@@ -76,11 +76,6 @@ bool BinaryTree::addNode(Node* subTreeRoot, const int key)
 	return false;
 }
 
-bool BinaryTree::addLeft(const int key, const int nodeIndex)
-{
-	return addLeft(node(nodeIndex), key);
-}
-
 bool BinaryTree::addLeft(Node* subTreeRoot, const int key)
 {
 	if (subTreeRoot == nullptr)
@@ -93,11 +88,6 @@ bool BinaryTree::addLeft(Node* subTreeRoot, const int key)
 		return true;
 	}
 	return false;
-}
-
-bool BinaryTree::addRight(const int key, const int nodeIndex)
-{
-	return addRight(node(nodeIndex), key);
 }
 
 bool BinaryTree::addRight(Node* subTreeRoot, const int key)
