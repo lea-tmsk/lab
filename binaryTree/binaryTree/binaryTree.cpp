@@ -76,11 +76,6 @@ bool BinaryTree::addNode(Node* subTreeRoot, const int key)
 	return false;
 }
 
-bool BinaryTree::addLeft(const int key, const int nodeIndex)
-{
-	return addLeft(node(nodeIndex), key);
-}
-
 bool BinaryTree::addLeft(Node* subTreeRoot, const int key)
 {
 	if (subTreeRoot == nullptr)
@@ -93,11 +88,6 @@ bool BinaryTree::addLeft(Node* subTreeRoot, const int key)
 		return true;
 	}
 	return false;
-}
-
-bool BinaryTree::addRight(const int key, const int nodeIndex)
-{
-	return addRight(node(nodeIndex), key);
 }
 
 bool BinaryTree::addRight(Node* subTreeRoot, const int key)
@@ -290,14 +280,14 @@ BinaryTree BinaryTree::copySubTree(const Node* subTreeRoot) const
 	return bt;
 }
 
-int BinaryTree::minKey(const int nodeIndex) const
+int BinaryTree::getMin(const int nodeIndex) const
 {
-	return minKey(node(nodeIndex));
+	return getMin(node(nodeIndex));
 }
 
-int BinaryTree::minKey(Node* subTreeRoot) const
+int BinaryTree::getMin(Node* subTreeRoot) const
 {
-	assert(subTreeRoot != nullptr && "minKey: subTreeRoot == nullptr");
+	assert(subTreeRoot != nullptr && "getMin: subTreeRoot == nullptr");
 
 	int min = subTreeRoot->key;
 	std::vector<Node*> currentLevelNodes;
@@ -334,14 +324,14 @@ int BinaryTree::minKey(Node* subTreeRoot) const
 	return min;
 }
 
-int BinaryTree::maxKey(const int nodeIndex) const
+int BinaryTree::getMax(const int nodeIndex) const
 {
-	return maxKey(node(nodeIndex));
+	return getMax(node(nodeIndex));
 }
 
-int BinaryTree::maxKey(Node* subTreeRoot) const
+int BinaryTree::getMax(Node* subTreeRoot) const
 {
-	assert(subTreeRoot != nullptr && "maxKey: subTreeRoot == nullptr");
+	assert(subTreeRoot != nullptr && "getMax: subTreeRoot == nullptr");
 
 	int max = subTreeRoot->key;
 	std::vector<Node*> currentLevelNodes;
@@ -416,12 +406,12 @@ int BinaryTree::keysSum(Node* subTreeRoot) const
 	return sum;
 }
 
-int BinaryTree::findKeyLevel(const int key, const int nodeIndex) const
+int BinaryTree::getLevelByKey(const int key, const int nodeIndex) const
 {
-	return findKeyLevel(node(nodeIndex), key);
+	return getLevelByKey(node(nodeIndex), key);
 }
 
-int BinaryTree::findKeyLevel(Node* subTreeRoot, const int key) const
+int BinaryTree::getLevelByKey(Node* subTreeRoot, const int key) const
 {
 	if (subTreeRoot == nullptr)
 	{
@@ -511,12 +501,12 @@ void BinaryTree::copyNodes(const Node* subTreeRoot, Node* copyRoot)
 	}
 }
 
-bool BinaryTree::deleteNode(const int nodeIndex)
+bool BinaryTree::deleteNodeByIndex(const int deleteIndex, const int nodeIndex)
 {
-	return deleteNode(node(nodeIndex));
+	return deleteNodeByIndex(node(nodeIndex, deleteIndex));
 }
 
-bool BinaryTree::deleteNode(Node* subTreeRoot)
+bool BinaryTree::deleteNodeByIndex(Node* subTreeRoot)
 {
 	if (subTreeRoot == nullptr)
 	{
@@ -635,9 +625,14 @@ bool BinaryTree::deleteNode(Node* subTreeRoot)
 	return false;
 }
 
-bool BinaryTree::deleteNodeKey(const int key, const int nodeIndex)
+bool BinaryTree::deleteNodeByKey(const int key, const int nodeIndex)
 {
-	return deleteNode(findKey(key, nodeIndex));
+	return deleteNodeByIndex(findKey(key, nodeIndex));
+}
+
+bool BinaryTree::deleteNodeByKey(Node* subTreeRoot, const int key)
+{
+	return deleteNodeByIndex(findKey(subTreeRoot, key));
 }
 
 void BinaryTree::deleteTree(const int nodeIndex)
