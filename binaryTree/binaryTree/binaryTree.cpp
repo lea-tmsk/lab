@@ -155,7 +155,7 @@ bool BinaryTree::isTreeBalanced(Node* subTreeRoot) const
 {
 	if (subTreeRoot == nullptr)
 	{
-		return false;
+		return true;
 	}
 
 	bool leftSubTreeBalanced = false, rightSubTreeBalanced = false;
@@ -178,7 +178,7 @@ bool BinaryTree::isTreeBalanced(Node* subTreeRoot) const
 
 	int heightDifference = treeHeight(subTreeRoot->leftChild) - treeHeight(subTreeRoot->rightChild);
 
-	if (heightDifference >= -1 && heightDifference <= 1)
+	if (abs(heightDifference) <= 1)
 	{
 		return true;
 	}
@@ -627,6 +627,10 @@ bool BinaryTree::deleteNodeByIndex(Node* subTreeRoot)
 
 bool BinaryTree::deleteNodeByKey(const int key, const int nodeIndex)
 {
+	if (m_root == nullptr)
+	{
+		return false;
+	}
 	return deleteNodeByIndex(findKey(key, nodeIndex));
 }
 
