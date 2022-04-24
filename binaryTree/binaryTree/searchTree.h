@@ -7,7 +7,7 @@ class SearchTree : public BinaryTree
 public:
 	SearchTree() : BinaryTree() {};
 	SearchTree(const SearchTree& copy) : BinaryTree(copy) {};
-	~SearchTree() = default;
+	virtual ~SearchTree() = default; //is it supposed to be "virtual"?
 
 	using BinaryTree::getMin;
 	using BinaryTree::getMax;
@@ -20,7 +20,7 @@ public:
 	SearchTree copySubTree(const int nodeIndex = 0) const;
 	SearchTree& operator=(const SearchTree& other);
 
-private:
+protected:
 	int getMin(Node* subTreeRoot) const override;
 	int getMax(Node* subTreeRoot) const override;
 	bool addNode(Node* node, const int key) override;

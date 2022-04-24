@@ -123,11 +123,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="balancedTree.cpp" />
     <ClCompile Include="binaryTree.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="searchTree.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="balancedTree.h" />
     <ClInclude Include="binaryTree.h" />
     <ClInclude Include="searchTree.h" />
   </ItemGroup>

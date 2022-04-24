@@ -4,7 +4,7 @@
 
 class BinaryTree
 {
-public:
+protected:
 	class Node
 	{
 	public:
@@ -18,10 +18,12 @@ public:
 		int numberOfChildren() const;
 
 		int key = 0;
+		int balance = 0;
 		Node* leftChild = nullptr;
 		Node* rightChild = nullptr;
 	};
 
+public:
 	BinaryTree() = default;
 	BinaryTree(const BinaryTree& copy);
 	virtual ~BinaryTree();
