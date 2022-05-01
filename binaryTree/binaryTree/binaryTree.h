@@ -8,8 +8,12 @@ protected:
 	class Node
 	{
 	public:
-		Node(const int key = 0, Node* leftChild = nullptr, Node* rightChild = nullptr) :
+		Node(const int key = 0,
+			 int height = 1,
+			 Node* leftChild = nullptr,
+			 Node* rightChild = nullptr) :
 			key(key),
+			height(height),
 			leftChild(leftChild),
 			rightChild(rightChild)
 		{}
@@ -18,7 +22,7 @@ protected:
 		int numberOfChildren() const;
 
 		int key = 0;
-		int balance = 0;
+		int height = 1;
 		Node* leftChild = nullptr;
 		Node* rightChild = nullptr;
 	};
