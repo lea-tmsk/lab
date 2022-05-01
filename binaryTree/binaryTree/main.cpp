@@ -12,53 +12,69 @@ int main()
 	srand(time(0));
 
 	BalancedTree bt;
-	int treeSize = 200, x;
-	std::vector<int> keys;
-	for (int i = 0; i < treeSize; i++)
+	int treeSize = 1000, x;
+	for (int j = 0; j < 10; j++)
 	{
-		//bt.addNode((i % 2) ? 100-i : i);
-		x = rand() % 200;
-		bt.addNode(x);
-		keys.push_back(x);
-		//bt.print();
-		//cout << endl;
-		//cout << "nodes:" << bt.numberOfNodes() << endl;
-		if (bt.isTreeBalanced() && bt.isSearchTree())
+		std::vector<int> keys;
+		for (int i = 0; i < treeSize; i++)
 		{
-			//cout << "is balanced and search tree" << endl;
-		}
-		else
-		{
-			if (!bt.isTreeBalanced())
-				cout << "ERROR: isn't balanced" << endl;
+			x = rand() % 10000;
+			//cout << "\nadd node: " << x;
+			//bt.print();
+			bt.addNode(x);
+			keys.push_back(x);
+			if (bt.isTreeBalanced() && bt.isSearchTree())
+			{
+				//cout << "is balanced and search tree" << endl;
+			}
 			else
-				cout << "error: isn't search tree" << endl;
-			break;
+			{
+				if (!bt.isTreeBalanced())
+					cout << "ERROR: isn't balanced" << endl;
+				else
+					cout << "error: isn't search tree" << endl;
+				break;
+			}
 		}
-		//cout << (bt.isTreeBalanced() ? "is balanced" : "isn't balanced") << endl;
-		//cout << endl;
-	}
-	bt.print();
-	cout << "nodes:" << bt.numberOfNodes() << endl;
-	cout << (bt.isTreeBalanced() ? "is balanced" : "isn't balanced") << endl;
-
-	for (int i = 0; i < treeSize; i++)
-	{
-		//cout << "delete key: " << keys[i] << endl;
+		cout << "\nnodes:" << bt.numberOfNodes() << endl;
 		//bt.print();
-		bt.deleteNodeByKey(keys[i]);
-		if (bt.isTreeBalanced() && (bt.isEmpty() || bt.isSearchTree()))
+		cout << (bt.isTreeBalanced() ? "is balanced" : "isn't balanced") << endl;
+		cout << (bt.isSearchTree() ? "is a search tree" : "isn't a search tree") << endl;
+		int deleted = 0;
+		for (int i = 0; i < treeSize; i++)
+		//for (int i = treeSize; i >= 0; i--)
 		{
-			cout << "is balanced and search tree" << endl;
+			//cout << "\ndelete index: " << i;
+			//bt.print();
+			if (bt.deleteNodeByKey(keys[i]))
+			//if (bt.deleteNodeByIndex(0))
+			{
+				deleted++;
+			}
+			//cout << "\nnodes amount: " << bt.numberOfNodes();
+			if (bt.isTreeBalanced() && (bt.isEmpty() || bt.isSearchTree()))
+			{
+				//cout << "is balanced and search tree" << endl;
+			}
+			else
+			{
+				bt.print();
+				cout << "\nERROR: isn't balanced" << endl;
+				break;
+			}
 		}
-		else
-		{
-			bt.print();
-			cout << "\nERROR: isn't balanced" << endl;
-			break;
-		}
+		cout << "\ndeleted: " << deleted;
+		cout << (bt.isEmpty() ? "\ntree is empty" : "\ntree isn't empty") << endl;
+		bt.deleteTree();
+		cout << endl;
 	}
-	cout << (bt.isEmpty() ? "tree is empty" : "tree isn't empty") << endl;
+
+	BinaryTree* ptr = &bt;
+	ptr->addNode(10);
+	ptr->addNode(10);
+	ptr->addNode(14);
+	ptr->addNode(15);
+	bt.print();
 
 	return 0;
 }

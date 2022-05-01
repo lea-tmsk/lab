@@ -10,8 +10,9 @@ public:
 	~BalancedTree() = default;
 
 	using BinaryTree::addNode;
-	using BinaryTree::deleteNodeByKey;
 	using BinaryTree::deleteNodeByIndex;
+
+	bool deleteNodeByKey(const int key, const int rootIndex = 0);
 
 	BalancedTree copySubTree(const int nodeIndex = 0) const;
 	BalancedTree& operator=(const BalancedTree& other);
@@ -19,19 +20,24 @@ public:
 	bool isSearchTree(const int nodeindex = 0) const;
 
 private:
-	bool addNode(Node* node, const int key, bool& unbalanced);
 
 	bool addNode(Node* node, const int key) override;
-	bool deleteNodeByKey(Node* subTreeRoot, const int key) override;
-	bool deleteNodeByIndex(Node* subTreeRoot) override;
+	bool deleteNodeByIndex(Node* node) override;
 	BalancedTree copySubTree(Node* subTreeRoot) const;
+	Node* deleteNode(Node* node, const int key, bool& wasDeleted);
 
+	Node* addNodeRec(Node* node, const int key);
 	bool isSearchTree(Node* parent) const;
-	void checkBalances(Node* subTreeRoot);
-	bool balanceTree(Node* node);
-	void rotateRight(Node* parent);
-	void rotateLeft(Node* parent);
-	void rotateRightTwice(Node* parent);
-	void rotateLeftTwice(Node* parent);
+	Node* balanceTree(Node* node);
+	Node* rotateRight(Node* parent);
+	Node* rotateLeft(Node* parent);
+	Node* rotateRightTwice(Node* parent);
+	Node* rotateLeftTwice(Node* parent);
+	Node* findNodeByKey(Node* subTreeRoot, const int key) const;
+	int height(Node* node) const;
+	int balance(Node* node) const;
+	void newHeight(Node* node) const;
+	Node* findMin(Node* node) const;
+	Node* balanceMinSubtree(Node* node);
 };
 
