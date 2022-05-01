@@ -1,10 +1,11 @@
 #include "balancedTree.h"
+#include <iostream>
 
 bool BalancedTree::addNode(Node* node, const int key)
 {
-	if (node == nullptr)
+	if (!node)
 	{
-		if (node == m_root)
+		if (!m_root)
 		{
 			m_root = new Node(key);
 			return true;
@@ -15,62 +16,111 @@ bool BalancedTree::addNode(Node* node, const int key)
 	{
 		return false;
 	}
-	bool unbalanced = false;
-	addNode(node, key, unbalanced);
-	while (!isTreeBalanced())
+	if (addNodeRec(node, key))
 	{
-		checkBalances(m_root);
+		return true;
 	}
-	return true;
+	return false;
 }
 
-bool BalancedTree::addNode(Node* node, const int key, bool& unbalanced)
+BinaryTree::Node* BalancedTree::addNodeRec(Node* node, const int key)
 {
-	if (key >= node->key)
+	if (!node)
 	{
-		if (!node->rightChild)
-		{
-			node->rightChild = new Node(key);
-		}
-		else
-		{
-			return addNode(node->rightChild, key, unbalanced);
-		}
+		return new Node(key);
+	}
+	if (key == node->key)
+	{
+		return nullptr;
+	}
+	if (key < node->key)
+	{
+		node->leftChild = addNodeRec(node->leftChild, key);
 	}
 	else
 	{
-		if (!node->leftChild)
-		{
-			node->leftChild = new Node(key);
-		}
-		else
-		{
-			return addNode(node->leftChild, key, unbalanced);
-		}
+		node->rightChild = addNodeRec(node->rightChild, key);
 	}
-	return true;
+	if (node == m_root)
+	{
+		m_root = balanceTree(node);
+		return m_root;
+	}
+	return balanceTree(node);
 }
 
-bool BalancedTree::deleteNodeByKey(Node* subTreeRoot, const int key)
+bool BalancedTree::deleteNodeByKey(const int key, const int rootIndex)
 {
-	return deleteNodeByIndex(findKey(subTreeRoot, key));
+	bool wasDeleted = true;
+	deleteNode(node(rootIndex), key, wasDeleted);
+	if (wasDeleted)
+	{
+		return true;
+	}
+	return false;
 }
 
-bool BalancedTree::deleteNodeByIndex(Node* subTreeRoot)
+BinaryTree::Node* BalancedTree::deleteNode(Node* node, const int key, bool& wasDeleted)
 {
-	if (subTreeRoot == nullptr)
+	if (!node)
+	{
+		wasDeleted = false;
+		return nullptr;
+	}
+	
+	if (key < node->key)
+	{
+		node->leftChild = deleteNode(node->leftChild, key, wasDeleted);
+	}
+	else if (key > node->key)
+	{
+		node->rightChild = deleteNode(node->rightChild, key, wasDeleted);
+	}
+	else
+	{
+		Node* leftChild = node->leftChild;
+		Node* rightChild = node->rightChild;
+		bool isRoot = (node == m_root ? true : false);
+		if (isRoot && !leftChild && !rightChild)
+		{
+			m_root = nullptr;
+			delete node;
+			return nullptr;
+		}
+		delete node;
+		if (!rightChild)
+		{
+			if (isRoot)
+			{
+				m_root = leftChild;
+			}
+			return leftChild;
+		}
+		Node* min = findMin(rightChild);
+		min->rightChild = balanceMinSubtree(rightChild);
+		min->leftChild = leftChild;
+		if (isRoot)
+		{
+			m_root = balanceTree(min);
+			return m_root;
+		}
+		return balanceTree(min);
+	}
+	if (node == m_root)
+	{
+		m_root = balanceTree(node);
+		return m_root;
+	}
+	balanceTree(node);
+}
+
+bool BalancedTree::deleteNodeByIndex(Node* node)
+{
+	if (!node)
 	{
 		return false;
 	}
-	SearchTree::deleteNodeByIndex(subTreeRoot);
-	if (!isEmpty())
-	{
-		while (!isTreeBalanced())
-		{
-			checkBalances(m_root);
-		}
-	}
-	return true;
+	return deleteNodeByKey(getKeyByIndex(node));
 }
 
 BalancedTree BalancedTree::copySubTree(const int nodeIndex) const
@@ -133,128 +183,155 @@ bool BalancedTree::isSearchTree(Node* parent) const
 	return true;
 }
 
-void BalancedTree::checkBalances(Node* subTreeRoot)
+BinaryTree::Node* BalancedTree::balanceTree(Node* node)
+{
+	newHeight(node);
+	int nodeBalance = balance(node);
+
+	if (nodeBalance == -2)
+	{
+		if (balance(node->leftChild) < 1)
+		{
+			return rotateRight(node);
+		}
+		else
+		{
+			return rotateRightTwice(node);
+		}
+	}
+	if (nodeBalance == 2)
+	{
+		Node* rightChild = node->rightChild;
+		if (balance(node->rightChild) > -1)
+		{
+			return rotateLeft(node);
+		}
+		else
+		{
+			return rotateLeftTwice(node);
+		}
+	}
+	return node;
+}
+
+BinaryTree::Node * BalancedTree::rotateRight(Node* parent)
+{
+	if (parent == nullptr)
+	{
+		return nullptr;
+	}
+	Node* child = parent->leftChild;
+
+	parent->leftChild = child->rightChild;
+	child->rightChild = parent;
+	
+	newHeight(parent);
+	newHeight(child);
+
+	return child;
+}
+
+BinaryTree::Node* BalancedTree::rotateLeft(Node* parent)
+{
+	if (parent == nullptr) 
+	{
+		return nullptr;
+	}
+	Node* child = parent->rightChild;
+
+	parent->rightChild = child->leftChild;
+	child->leftChild = parent;
+
+	newHeight(parent);
+	newHeight(child);
+	
+	return child;
+}
+
+BinaryTree::Node* BalancedTree::rotateRightTwice(Node* parent)
+{
+	parent->leftChild = rotateLeft(parent->leftChild);
+	return rotateRight(parent);
+}
+
+BinaryTree::Node* BalancedTree::rotateLeftTwice(Node* parent)
+{
+	parent->rightChild = rotateRight(parent->rightChild);
+	return rotateLeft(parent);
+}
+
+BinaryTree::Node* BalancedTree::findNodeByKey(Node* subTreeRoot, const int key) const
 {
 	if (subTreeRoot == nullptr)
 	{
-		return;
+		return nullptr;
 	}
-	
-	int left = 0;
-	int right = 0;
-	if (subTreeRoot->leftChild)
+
+	if (key == subTreeRoot->key)
 	{
-		checkBalances(subTreeRoot->leftChild);
-		left = treeHeight(subTreeRoot->leftChild);
+		return subTreeRoot;
 	}
-	if (subTreeRoot->rightChild)
+	if (key > subTreeRoot->key)
 	{
-		checkBalances(subTreeRoot->rightChild);
-		right = treeHeight(subTreeRoot->rightChild);
+		return findNodeByKey(subTreeRoot->rightChild, key);
 	}
-	subTreeRoot->balance = right - left;
-	if (abs(subTreeRoot->balance) > 1)
+	if (key < subTreeRoot->key)
 	{
-		balanceTree(subTreeRoot);
+		return findNodeByKey(subTreeRoot->leftChild, key);
 	}
 }
 
-bool BalancedTree::balanceTree(Node* node)
+int BalancedTree::height(Node* node) const
 {
-	if (node->balance < -1)
+	if (!node)
 	{
-		Node* leftChild = node->leftChild;
-		if (leftChild->balance < 1)
-		{
-			rotateRight(node);
-		}
-		else
-		{
-			rotateRightTwice(node);
-		}
+		return 0;
 	}
-	if (node->balance > 1)
-	{
-		Node* rightChild = node->rightChild;
-		if (rightChild->balance > -1)
-		{
-			rotateLeft(node);
-		}
-		else
-		{
-			rotateLeftTwice(node);
-		}
-	}
-	return true;
+	return node->height;
 }
 
-void BalancedTree::rotateRight(Node* parent)
+int BalancedTree::balance(Node* node) const
 {
-	if (parent == nullptr || !parent->leftChild)
+	if (!node)
 	{
-		return;
+		return 0;
 	}
-	Node* child = parent->leftChild;
-	Node* centralSubTree = child->rightChild;
+	return height(node->rightChild) - height(node->leftChild);
+}
 
-	Node* grandparent = findParent(parent);
-	if (grandparent)
+void BalancedTree::newHeight(Node* node) const
+{
+	int heightLeft = height(node->leftChild);
+	int heightRight = height(node->rightChild);
+	if (heightLeft > heightRight)
 	{
-		if (grandparent->leftChild == parent)
-		{
-			grandparent->leftChild = child;
-		}
-		else
-		{
-			grandparent->rightChild = child;
-		}
+		node->height = heightLeft + 1;
 	}
 	else
 	{
-		m_root = child;
+		node->height = heightRight + 1;
 	}
-	child->rightChild = parent;
-	parent->leftChild = centralSubTree;
 }
 
-void BalancedTree::rotateLeft(Node* parent)
+BinaryTree::Node* BalancedTree::findMin(Node* node) const
 {
-	if (parent == nullptr || !parent->rightChild)
+	if (!node->leftChild)
 	{
-		return;
-	}
-	Node* child = parent->rightChild;
-	Node* centralSubTree = child->leftChild;
-
-	Node* grandparent = findParent(parent);
-	if (grandparent)
-	{
-		if (grandparent->leftChild == parent)
-		{
-			grandparent->leftChild = child;
-		}
-		else
-		{
-			grandparent->rightChild = child;
-		}
+		return node;
 	}
 	else
 	{
-		m_root = child;
+		return findMin(node->leftChild);
 	}
-
-	child->leftChild = parent;
-	parent->rightChild = centralSubTree;
 }
 
-void BalancedTree::rotateRightTwice(Node* parent)
+BinaryTree::Node* BalancedTree::balanceMinSubtree(Node* node)
 {
-	rotateLeft(parent->leftChild);
-	rotateRight(parent);
+	if (!node->leftChild)
+	{
+		return node->rightChild;
+	}
+	node->leftChild = balanceMinSubtree(node->leftChild);
+	return balanceTree(node);
 }
 
-void BalancedTree::rotateLeftTwice(Node* parent)
-{
-	rotateRight(parent->rightChild);
-	rotateLeft(parent);
-}
