@@ -120,7 +120,7 @@ bool BalancedTree::deleteNodeByIndex(Node* node)
 	{
 		return false;
 	}
-	return deleteNodeByKey(getKeyByIndex(node));
+	return deleteNodeByKey(node->key);
 }
 
 BalancedTree BalancedTree::copySubTree(const int nodeIndex) const

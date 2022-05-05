@@ -46,7 +46,7 @@ public:
 	int getIndexByKey(const int key, const int nodeIndex = 0) const;
 	int getKeyByIndex(const int nodeIndex = 0) const;
 	bool deleteNodeByIndex(const int deleteIndex, const int nodeIndex = 0);
-	bool deleteNodeByKey(const int key, const int nodeIndex = 0);
+	virtual bool deleteNodeByKey(const int key, const int nodeIndex = 0);
 	void deleteTree(const int nodeIndex = 0);
 	void deleteSubTrees(const int nodeIndex = 0);
 	void printLevel(const int level, const int nodeIndex = 0) const;

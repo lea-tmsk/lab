@@ -12,7 +12,7 @@ public:
 	using BinaryTree::addNode;
 	using BinaryTree::deleteNodeByIndex;
 
-	bool deleteNodeByKey(const int key, const int rootIndex = 0);
+	bool deleteNodeByKey(const int key, const int rootIndex = 0) override;
 
 	BalancedTree copySubTree(const int nodeIndex = 0) const;
 	BalancedTree& operator=(const BalancedTree& other);
@@ -25,7 +25,6 @@ private:
 	bool deleteNodeByIndex(Node* node) override;
 	BalancedTree copySubTree(Node* subTreeRoot) const;
 	Node* deleteNode(Node* node, const int key, bool& wasDeleted);
-
 	Node* addNodeRec(Node* node, const int key);
 	bool isSearchTree(Node* parent) const;
 	Node* balanceTree(Node* node);
