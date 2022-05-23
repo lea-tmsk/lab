@@ -18,6 +18,23 @@ protected:
 			rightChild(rightChild)
 		{}
 
+		int getBalance()
+		{
+			if (leftChild && rightChild)
+			{
+				return rightChild->height - leftChild->height;
+			}
+			if (leftChild)
+			{
+				return -leftChild->height;
+			}
+			if (rightChild)
+			{
+				return rightChild->height;
+			}
+			return 0;
+		}
+
 		int getKey() const;
 		int numberOfChildren() const;
 

@@ -738,7 +738,7 @@ void BinaryTree::printLevel(Node* subTreeRoot, const int level, const int curren
 	{
 		if (currentLevel == level)
 		{
-			std::cout << subTreeRoot->key << " ";
+			std::cout << subTreeRoot->key << " (" << subTreeRoot->getBalance() << ") ";
 		}
 		else
 		{

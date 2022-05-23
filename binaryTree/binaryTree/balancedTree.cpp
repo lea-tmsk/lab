@@ -145,7 +145,7 @@ BalancedTree& BalancedTree::operator=(const BalancedTree& other)
 	{
 		return *this;
 	}
-	BinaryTree::operator=(other);
+	SearchTree::operator=(other);
 	return *this;
 }
 
