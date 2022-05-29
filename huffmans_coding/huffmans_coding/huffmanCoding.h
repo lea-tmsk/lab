@@ -44,7 +44,7 @@ public:
 
 	void build(const char* fileName, const char* treeFileName);
 
-	double encode(const char* originalText,
+	int encode(const char* originalText,
 		  	   const char* codedText,
 			   const char* treeFileName = "tree.txt");
 

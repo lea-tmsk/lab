@@ -92,7 +92,7 @@ void HuffmanCoding::build(const char* fileName, const char* treeFileName)
 }
 
 
-double HuffmanCoding::encode(const char* originalText, const char* codedText, const char* treeFileName)
+int HuffmanCoding::encode(const char* originalText, const char* codedText, const char* treeFileName)
 {
 	importTree(treeFileName);
 	int oldSize = m_root->frequency * 8;
@@ -113,27 +113,30 @@ double HuffmanCoding::encode(const char* originalText, const char* codedText, co
 	}
 
 	char symbol;
-	int newSize = 0;
-	BooleanVector resultBV(oldSize);
+	BooleanVector resultBV;
 
 	while (!original.eof())
 	{
 		symbol = original.get();
-		if (codes[symbol].get_size())
-		{
-			resultBV <<= codes[symbol].get_size();
-			resultBV |= codes[symbol];
-			newSize += codes[symbol].get_size();
-		}
+		resultBV <<= codes[symbol].get_size();
+		//cout << resultBV << " | " << codes[symbol] << endl;
+		resultBV |= codes[symbol];
+		//cout << resultBV << endl;
+		//cout << codes[symbol] << " " << symbol << " ";
+		//cout << symbol;
 	}
-	resultBV.resize(newSize);
+
+	//cout << endl << resultBV << endl;
+
+	cout << resultBV.get_size() << endl;
+	cout << oldSize << endl;
 
 	resultBV.filePrint(codedText);
 
 	original.close();
 	result.close();
 
-	return ((double)newSize / oldSize * 100);
+	return ((double)resultBV.get_size() / oldSize * 100);
 }
 
 void HuffmanCoding::codeSymbols(HuffmanNode* node, map<char, BooleanVector>& codes) const
@@ -151,15 +154,6 @@ void HuffmanCoding::codeSymbols(HuffmanNode* node,
 		return;
 	}
 
-	if (node->leftChild)
-	{
-		codeSymbols(node->leftChild, code << 1, codes);
-	}
-
-	if (node->rightChild)
-	{
-		codeSymbols(node->rightChild, (code << 1) | BooleanVector(1, 1), codes);
-	}
 
 	if (!node->leftChild && !node->rightChild)
 	{
@@ -173,6 +167,19 @@ void HuffmanCoding::codeSymbols(HuffmanNode* node,
 			}
 		}
 		codes[symbol] = code;
+		//cout << symbol << ": " << codes[symbol] << endl;
+	}
+
+	//code.resize(code.m_size + 1);
+
+	if (node->leftChild)
+	{
+		codeSymbols(node->leftChild, code << 1, codes);
+	}
+
+	if (node->rightChild)
+	{
+		codeSymbols(node->rightChild, (code << 1) | BooleanVector(1, 1), codes);
 	}
 }
 
@@ -189,6 +196,8 @@ bool HuffmanCoding::decode(const char* codedText,
 	
 	BooleanVector bv;
 	bv.getFromFile(codedText);
+
+	//cout << endl << bv << endl;
 
 	importTree(treeFileName);
 	if (!m_root)
@@ -223,10 +232,6 @@ bool HuffmanCoding::decode(const char* codedText,
 				decoded << temp->symbols;
 				temp = m_root->leftChild;
 			}
-		}
-		if (!i)
-		{
-			decoded << temp->symbols;
 		}
 	}
 

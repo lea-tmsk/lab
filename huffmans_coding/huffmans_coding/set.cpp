@@ -75,7 +75,6 @@ void Set::operator=(const Set& set)
 		return;
 	}
 	m_power = set.m_power;
-	//*this = (BooleanVector)set;
 	BooleanVector::operator=(set);
 }
 
@@ -203,7 +202,6 @@ ostream& operator<<(ostream& os, const Set& set)
 	{
 		if (set[i])
 		{
-			//os << (char)i << "";
 			os << (char)i;
 		}
 	}
