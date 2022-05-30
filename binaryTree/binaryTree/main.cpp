@@ -12,15 +12,15 @@ int main()
 	srand(time(0));
 
 	BalancedTree bt;
-	int treeSize = 1000, x;
-	for (int j = 0; j < 10; j++)
+	int treeSize = 15, x;
+	for (int j = 0; j < 1; j++)
 	{
 		std::vector<int> keys;
 		for (int i = 0; i < treeSize; i++)
 		{
-			x = rand() % 10000;
-			//cout << "\nadd node: " << x;
-			//bt.print();
+			x = rand() % 100;
+			cout << "\nadd node: " << x;
+			bt.print();
 			bt.addNode(x);
 			keys.push_back(x);
 			if (bt.isTreeBalanced() && bt.isSearchTree())
@@ -37,15 +37,15 @@ int main()
 			}
 		}
 		cout << "\nnodes:" << bt.numberOfNodes() << endl;
-		//bt.print();
+		bt.print();
 		cout << (bt.isTreeBalanced() ? "is balanced" : "isn't balanced") << endl;
 		cout << (bt.isSearchTree() ? "is a search tree" : "isn't a search tree") << endl;
 		int deleted = 0;
 		for (int i = 0; i < treeSize; i++)
 		//for (int i = treeSize; i >= 0; i--)
 		{
-			//cout << "\ndelete index: " << i;
-			//bt.print();
+			cout << "\ndelete key: " << keys[i];
+			bt.print();
 			if (bt.deleteNodeByKey(keys[i]))
 			//if (bt.deleteNodeByIndex(0))
 			{

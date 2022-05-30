@@ -366,11 +366,11 @@ bool multiphaseSorting(const char *mainFileName, int n = 3)
 
 int createAndSortFile(const char *fileName, const int numbersCount, const int maxNumberValue)
 {
-	if (!createFileWithRandomNumbers(fileName, numbersCount, maxNumberValue)) {
+	/*if (!createFileWithRandomNumbers(fileName, numbersCount, maxNumberValue)) {
 		return -1;
-	}
+	}*/
 
-	multiphaseSorting(fileName);
+	multiphaseSorting(fileName, 5);
 
 	if (!isFileSorted("result.txt", numbersCount)) {
 		return -2;
