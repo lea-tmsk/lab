@@ -101,15 +101,9 @@ int HuffmanCoding::encode(const char* originalText, const char* codedText, const
 	codeSymbols(m_root, codes);
 
 	ifstream original(originalText);
-	ofstream result(codedText);
 	if (!original.is_open() || original.eof())
 	{
 		return -1;
-	}
-
-	if (!result.is_open())
-	{
-		build(originalText, treeFileName);
 	}
 
 	char symbol;
@@ -119,22 +113,12 @@ int HuffmanCoding::encode(const char* originalText, const char* codedText, const
 	{
 		symbol = original.get();
 		resultBV <<= codes[symbol].get_size();
-		//cout << resultBV << " | " << codes[symbol] << endl;
 		resultBV |= codes[symbol];
-		//cout << resultBV << endl;
-		//cout << codes[symbol] << " " << symbol << " ";
-		//cout << symbol;
 	}
-
-	//cout << endl << resultBV << endl;
-
-	cout << resultBV.get_size() << endl;
-	cout << oldSize << endl;
 
 	resultBV.filePrint(codedText);
 
 	original.close();
-	result.close();
 
 	return ((double)resultBV.get_size() / oldSize * 100);
 }
@@ -154,7 +138,6 @@ void HuffmanCoding::codeSymbols(HuffmanNode* node,
 		return;
 	}
 
-
 	if (!node->leftChild && !node->rightChild)
 	{
 		char symbol;
@@ -167,10 +150,7 @@ void HuffmanCoding::codeSymbols(HuffmanNode* node,
 			}
 		}
 		codes[symbol] = code;
-		//cout << symbol << ": " << codes[symbol] << endl;
 	}
-
-	//code.resize(code.m_size + 1);
 
 	if (node->leftChild)
 	{
@@ -196,8 +176,6 @@ bool HuffmanCoding::decode(const char* codedText,
 	
 	BooleanVector bv;
 	bv.getFromFile(codedText);
-
-	//cout << endl << bv << endl;
 
 	importTree(treeFileName);
 	if (!m_root)
@@ -234,6 +212,7 @@ bool HuffmanCoding::decode(const char* codedText,
 			}
 		}
 	}
+	decoded << temp->symbols;
 
 	decoded.close();
 
@@ -487,7 +466,7 @@ void HuffmanCoding::deleteTree(HuffmanNode* subTreeRoot)
 	delete subTreeRoot;
 }
 
-int HuffmanNode::numberOfChildren() const
+int HuffmanCoding::HuffmanNode::numberOfChildren() const
 {
 	int count = 0;
 	if (leftChild)
