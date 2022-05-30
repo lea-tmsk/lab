@@ -4,40 +4,41 @@
 #include <map>
 #pragma once
 
-class HuffmanNode
-{
-public:
-	HuffmanNode(int frequency = 0,
-				Set symbols = Set(),
-				HuffmanNode* leftChild = nullptr,
-				HuffmanNode* rightChild = nullptr) :
-				frequency(frequency),
-				symbols(symbols),
-				leftChild(leftChild),
-				rightChild(rightChild)
-	{}
-
-	~HuffmanNode() = default;
-
-	int numberOfChildren() const;
-
-	Set symbols;
-	int frequency = 0;
-	HuffmanNode* leftChild = nullptr;
-	HuffmanNode* rightChild = nullptr;
-};
-
-struct 
-{
-	bool operator()(HuffmanNode* first, HuffmanNode* second) const
-	{
-		return first->frequency < second->frequency;
-	}
-} compare;
-
 class HuffmanCoding
 {
 public:
+	class HuffmanNode
+	{
+	public:
+		HuffmanNode(int frequency = 0,
+			Set symbols = Set(),
+			HuffmanNode* leftChild = nullptr,
+			HuffmanNode* rightChild = nullptr) :
+			frequency(frequency),
+			symbols(symbols),
+			leftChild(leftChild),
+			rightChild(rightChild)
+		{}
+
+		~HuffmanNode() = default;
+
+		int numberOfChildren() const;
+
+		Set symbols;
+		int frequency = 0;
+		HuffmanNode* leftChild = nullptr;
+		HuffmanNode* rightChild = nullptr;
+	};
+
+	struct
+	{
+		bool operator()(HuffmanNode* first, HuffmanNode* second) const
+		{
+			return first->frequency < second->frequency;
+		}
+	} compare;
+
+
 	HuffmanCoding() = default;
 	HuffmanCoding(const HuffmanCoding& copy);
 	~HuffmanCoding();
