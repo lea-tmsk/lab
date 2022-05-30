@@ -248,7 +248,7 @@ void BooleanVector::resize(int newSize)
 
 void BooleanVector::filePrint(const char* fileName)
 {
-	ofstream file(fileName);
+	ofstream file(fileName, std::ios::binary);
 	if (!file.is_open())
 	{
 		return;
@@ -266,9 +266,6 @@ void BooleanVector::filePrint(const char* fileName)
 	for (int i = 0 ; i < m_memory; i++)
 	{
 		file << vector[i];
-		BooleanVector mask(8);
-		mask.vector[0] |= vector[i];
-		cout << vector[i] << " " << mask << endl;
 	}
 
 	file.close();
@@ -276,7 +273,7 @@ void BooleanVector::filePrint(const char* fileName)
 
 void BooleanVector::getFromFile(const char* fileName)
 {
-	ifstream file(fileName);
+	ifstream file(fileName, std::ios::binary);
 	if (!file.is_open())
 	{
 		return;
@@ -285,42 +282,26 @@ void BooleanVector::getFromFile(const char* fileName)
 	int extraCode;
 	extraCode = file.get() - '0';
 
-	std::vector<char> symbols;
+	std::vector<unsigned char> symbols;
 
-	file.seekg(0, file.end);
-	int length = file.tellg();
-	file.seekg(0, file.beg);
-	file.get();
-	cout << length << endl;
-	//char* buffer = new char[length];
-	//file.read(buffer, length);
-	
-	for (int i = 0; i < length; i++)
-	{
-		//cout << buffer[i] << " ";
-	}
 	int count = 0;
-	int symbol;
-	//char symbol;
-	for (int i = 0; i < length; i++)
-	//while ((symbol = file.get()) && (symbol != EOF))
+	unsigned char symbol;
+
+	while (!file.eof())
 	{
-		//char symbol = file.get();
 		symbol = file.get();
-		//cout << symbol << endl;
 		count++;
-		//if (!file.eof())
+		if (!file.eof())
 		{
 			symbols.push_back(symbol);
 		}
 	}
-	cout << symbols.size() << endl;
-	//cout << endl << count << endl;
 
 	if (vector)
 	{
 		delete[]vector;
 	}
+
 	m_memory = symbols.size();
 	vector = new byte[m_memory];
 	m_size = m_memory * 8 - extraCode;
@@ -328,7 +309,6 @@ void BooleanVector::getFromFile(const char* fileName)
 	for (int i = 0; i < m_memory; i++)
 	{
 		vector[i] = symbols[i];
-		//vector[i] = buffer[i];
 	}
 	file.close();
 }
@@ -409,30 +389,6 @@ BooleanVector BooleanVector::operator|(const BooleanVector& bv)
 
 	BooleanVector temp;
 
-	//cout << (*this) << " | " << bv << endl;
-
-	/*BooleanVector mask(8, 0);
-	int filledBits = m_size % 8;
-	if (filledBits > 0)
-	{
-		for (int i = 0; i < filledBits; i++)
-		{
-			mask.set_bit((*this)[m_size - filledBits + i], i);
-		}
-		vector[0] &= mask.vector[0];
-	}
-
-	mask.set_all(0);
-	filledBits = bv.m_size % 8;
-	if (filledBits > 0)
-	{
-		for (int i = 0; i < filledBits; i++)
-		{
-			mask.set_bit((*this)[m_size - filledBits + i], i);
-		}
-		bv.vector[0] &= mask.vector[0];
-	}*/
-
 	int i;
 
 	if (m_size > bv.m_size)
@@ -455,7 +411,6 @@ BooleanVector BooleanVector::operator|(const BooleanVector& bv)
 		{
 			temp.vector[i] = bv.vector[j] | (*this).vector[i];
 		}
-		//cout << temp << endl;
 		return temp;
 	}
 
@@ -471,7 +426,6 @@ BooleanVector BooleanVector::operator|(const BooleanVector& bv)
 			temp.vector[i] = bv.vector[i] | (*this).vector[j];
 		}
 
-		//cout << temp << endl;
 		return temp;
 	}
 
@@ -480,95 +434,7 @@ BooleanVector BooleanVector::operator|(const BooleanVector& bv)
 		temp.vector[i] = bv.vector[i] | vector[i];
 	}
 
-	//cout << temp << endl;
-
-	/*if (m_size > bv.m_size)
-	{
-		for (i = m_size - 1; i >= bv.m_size; i--)
-		{
-			temp <<= 1;
-			temp.set_bit((*this)[i], 0);
-		}
-	}
-	else if (bv.m_size > m_size)
-	{
-		for (i = bv.m_size - 1; i >= m_size; i--)
-		{
-			temp <<= 1;
-			temp.set_bit(bv[i], 0);
-		}
-	}
-
-	for (i = (bv.m_size > m_size ? m_size - 1 : bv.m_size - 1); i >= 0; i--)
-	{
-		temp <<= 1;
-		temp.set_bit((*this)[i] | bv[i], 0);
-	}*/
-
-	//cout << temp << endl;
-
-	//for (; i < m_size && i < bv.m_size; i++)
-	//{
-	//	temp <<= 1;
-	//	temp.set_bit(((*this)[i] | bv[i]), i);
-	//}
-	//
-	//for (; i < m_size; i++)
-	//{
-	//	temp <<= 1;
-	//	temp.set_bit((*this)[i], i);
-	//}
-
-	//for (; i < bv.m_size; i++)
-	//{
-	//	temp <<= 1;
-	//	temp.set_bit(bv[i], i);
-	//}
-
 	return temp;
-
-	/*int size, memory, min_memory;
-	bool flag;
-	if (m_size > bv.m_size)
-	{
-		size = m_size;
-		memory = m_memory - 1;
-		min_memory = bv.m_memory - 1;
-		flag = true;
-	}
-	else
-	{
-		size = bv.m_size;
-		memory = bv.m_memory - 1;
-		min_memory = m_memory - 1;
-		flag = false;
-	}
-	BooleanVector temp(size);
-	int i, index_vector;
-	for (i = min_memory, index_vector = memory; i >= 0; i--, index_vector--)
-	{
-		if (flag)
-		{
-			temp.vector[index_vector] = vector[index_vector] | bv.vector[i];
-		}
-		else
-		{
-			temp.vector[index_vector] = vector[i] | bv.vector[index_vector];
-		}
-	}
-	for (i = index_vector; i >= 0; i--)
-	{
-		if (flag)
-		{
-			temp.vector[i] |= vector[i];
-		}
-		else
-		{
-			temp.vector[i] |= bv.vector[i];
-		}
-	}
-
-	return temp;*/
 }
 
 
@@ -667,7 +533,6 @@ void BooleanVector::operator<<=(int amount)
 		m_size += amount;
 		m_memory = (m_size - 1) / 8 + 1;
 		vector = new byte[m_memory];
-		//cout << "diff: " << diff << endl;
 		set_all(0);
 		for (int i = 0; i < temp.get_size(); i++)
 		{
@@ -684,36 +549,6 @@ void BooleanVector::operator<<=(int amount)
 			set_bit(temp[i], i + amount); 
 		}
 	}
-	/*if (!m_memory)
-	{
-		cout << "\noperator <<=: the size of vector is 0";
-		return;
-	}
-	int bit = m_size + amount;
-	if (bit / 8 + 1 > m_memory)
-	{
-		while (bit / 8 + 1 > m_memory)
-		{
-			bit--;
-		}
-		m_size = bit + 1;
-	}
-	else
-	{
-		m_size = bit;
-	}
-	for (int i = bit - amount; i >= 0; i--, bit--)
-	{
-		if (operator[](i))
-		{
-			set_bit(1, bit);
-		}
-		else
-		{
-			set_bit(0, bit);
-		}
-	}
-	set_bit(0, amount - 1, amount);*/
 }
 
 BooleanVector BooleanVector::operator>>(int amount)
