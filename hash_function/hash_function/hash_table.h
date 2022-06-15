@@ -2,13 +2,15 @@
 #include <iostream>
 #pragma once
 
-struct IHashFunctions
+class IHashFunctions
 {
+public:
 	virtual int hash(int index, int key, int size) = 0;
 };
 
-struct HashFunction1 : IHashFunctions
+class HashFunction1 : public IHashFunctions
 {
+public:
 	int hash(int index, int key, int size) override
 	{
 		int hash = key % size;
@@ -20,26 +22,27 @@ struct HashFunction1 : IHashFunctions
 	}
 } hf1;
 
-struct HashFunction2 : IHashFunctions
+class HashFunction2 : public IHashFunctions
 {
+public:
 	int hash(int index, int key, int size) override
 	{
 		int hash = key % size;
 		double a = -(1 - sqrt(5)) / 2;
 		for (int i = 0; i < index; i++)
 		{
-			hash = (int)(hash * a * size) % size;
+			hash = ((int)(hash * a * size) + 1) % size;
 		}
 		return hash;
 	}
 } hf2;
 
-struct HashFunction : IHashFunctions
+class HashFunction : public IHashFunctions
 {
+public:
 	int hash(int index, int key, int size) override
 	{
-		int hash;
-		hash = (key % size + index * (1 + key % abs(size - 2))) % size;
+		return (key % size + index * (1 + key % abs(size - 2))) % size;
 	}
 } hf3;
 
@@ -52,9 +55,9 @@ public:
 	HashTable(const HashTable<T>& copy);
 	~HashTable();
 
-	void addKey(int key, T value);
-	void deleteKey(int key, T value);
-	bool checkKey(int key, T value);
+	bool addKey(int key, T value);
+	bool deleteKey(int key);
+	bool checkKey(int key);
 	void changeHashFunction(IHashFunctions* newHashFunction);
 
 	HashTable<T>& operator=(const HashTable<T>& ht);
@@ -63,11 +66,18 @@ public:
 
 private:
 	IHashFunctions* hf;
+	int m_actual_size = 0;
 	int m_size;
 	int* m_keys;
 	T* m_values;
-	bool* m_empty;
+	enum state
+	{
+		empty,
+		filled,
+		deleted
+	} * m_states;
 };
+
 
 
 template<typename T>
@@ -76,11 +86,10 @@ HashTable<T>::HashTable()
 	m_size = 1;
 	m_keys = new int[m_size];
 	m_values = new T[m_size];
-	m_empty = new bool[m_size];
-
+	m_states = new state[m_size];
 	m_keys[0] = 0;
 	m_values[0] = T();
-	m_empty[0] = true;
+	m_states[0] = empty;
 	hf = &hf1;
 }
 
@@ -90,12 +99,12 @@ HashTable<T>::HashTable(int size)
 	m_size = size;
 	m_keys = new int[m_size];
 	m_values = new T[m_size];
-	m_empty = new bool[m_size];
+	m_states = new state[m_size];
 	for (int i = 0; i < m_size; i++)
 	{
 		m_keys[i] = 0;
 		m_values[i] = T();
-		m_empty[i] = true;
+		m_states[i] = empty;
 	}
 	hf = &hf1;
 }
@@ -111,28 +120,31 @@ HashTable<T>::HashTable(const HashTable<T>& copy)
 	if (m_size != copy.m_size)
 	{
 		m_size = copy.m_size;
+
 		if (m_keys)
 		{
 			delete[]m_keys;
 		}
 		m_keys = new int[m_size];
+		
 		if (m_values)
 		{
 			delete[]m_values;
 		}
 		m_values = new T[m_size];
-		if (m_empty)
+		
+		if (m_states)
 		{
-			delete[]m_empty;
+			delete[]m_states;
 		}
-		m_empty = new bool[m_size];
+		m_states = new bool[m_size];
 	}
 
 	for (int i = 0; i < m_size; i++)
 	{
 		m_keys[i] = copy.m_keys[i];
 		m_values[i] = copy.m_values[i];
-		m_empty[i] = copy.m_empty[i];
+		m_states[i] = copy.m_states[i];
 	}
 	hf = copy.hf;
 }
@@ -142,27 +154,32 @@ HashTable<T>::~HashTable()
 {
 	delete[]m_keys;
 	delete[]m_values;
-	delete[]m_empty;
+	delete[]m_states;
 }
 
 template<typename T>
-void HashTable<T>::addKey(int key, T value)
+bool HashTable<T>::addKey(int key, T value)
 {
+	if (m_actual_size + 1 > m_size)
+	{
+		return false;
+	}
+	if (checkKey(key))
+	{
+		return false;
+	}
+
+	m_actual_size++;
 	int index = 0;
 	while (true)
 	{
 		int hash = hf->hash(index, key, m_size);
-		std::cout << "hash = " << hash << std::endl;
-		if (m_empty[hash])
+		if (m_states[hash] != filled)
 		{
 			m_keys[hash] = key;
 			m_values[hash] = value;
-			m_empty[hash] = false;
-			return;
-		}
-		else if (m_keys[hash] == key)
-		{
-			return;
+			m_states[hash] = filled;
+			return true;
 		}
 		else if (m_keys[hash] != key)
 		{
@@ -172,79 +189,48 @@ void HashTable<T>::addKey(int key, T value)
 }
 
 template<typename T>
-void HashTable<T>::deleteKey(int key, T value)
+bool HashTable<T>::deleteKey(int key)
 {
-	if (checkKey(key, value))
+	if (checkKey(key))
 	{
-		bool foundIndex = false;
+		m_actual_size--;
 		int index = 0;
-		int hash;
-		while (!foundIndex)
+		while (true)
 		{
-			hash = hf->hash(index, key, m_size);
-			if (m_empty[hash])
+			int hash = hf->hash(index, key, m_size);
+			if (m_states[hash] == empty)
 			{
-				return;
+				return false;
 			}
 			else if (m_keys[hash] == key)
 			{
-				if (m_values[hash] == value)
-				{
-					foundIndex = true;
-				}
-				else
-				{
-					return;
-				}
+				m_states[hash] = deleted;
+				return true;
 			}
 			else if (m_keys[hash] != key)
 			{
 				index++;
 			}
 		}
-		int tempIndex = hash;
-		bool foundNext = true;
-		index++;
-		while (foundNext)
-		{
-			hash = hf->hash(index, key, m_size);
-			if (!m_empty[hash])
-			{
-				m_keys[tempIndex] = m_keys[hash];
-				m_values[tempIndex] = m_values[hash];
-				tempIndex = hash;
-				index++;
-			}
-			else
-			{
-				foundNext = false;
-				m_keys[tempIndex] = 0;
-				m_values[tempIndex] = T();
-				m_empty[tempIndex] = true;
-			}
-		}
 	}
+	return false;
 }
 
 template<typename T>
-bool HashTable<T>::checkKey(int key, T value)
+bool HashTable<T>::checkKey(int key)
 {
 	int index = 0;
 	int hash;
 	while (true)
 	{
 		hash = hf->hash(index, key, m_size);
-		if (m_empty[hash])
+		if (m_states[hash] == empty)
 		{
 			return false;
 		}
 		else if (m_keys[hash] == key)
 		{
-			if (m_values[hash] == value)
-			{
-				return true;
-			}
-			return false;
+			return true;
 		}
 		else if (m_keys[hash] != key)
 		{
@@ -259,9 +245,10 @@ void HashTable<T>::changeHashFunction(IHashFunctions* newHashFunction)
 {
 	hf = newHashFunction;
 	HashTable temp(m_size);
+	temp.hf = newHashFunction;
 	for (int i = 0; i < m_size; i++)
 	{
-		if (!m_empty[i])
+		if (m_states[i] != empty)
 		{
 			temp.addKey(m_keys[i], m_values[i]);
 		}
@@ -279,27 +266,30 @@ HashTable<T>& HashTable<T>::operator=(const HashTable<T>& ht)
 	if (m_size != ht.m_size)
 	{
 		m_size = ht.m_size;
+
 		if (m_keys)
 		{
 			delete[]m_keys;
 		}
 		m_keys = new int[m_size];
+		
 		if (m_values)
 		{
 			delete[]m_values;
 		}
 		m_values = new T[m_size];
-		if (m_empty)
+		
+		if (m_states)
 		{
-			delete[]m_empty;
+			delete[]m_states;
 		}
-		m_empty = new bool[m_size];
+		m_states = new state[m_size];
 	}
 	for (int i = 0; i < m_size; i++)
 	{
 		m_keys[i] = ht.m_keys[i];
 		m_values[i] = ht.m_values[i];
-		m_empty[i] = ht.m_empty[i];
+		m_states[i] = ht.m_states[i];
 	}
 	return *this;
 }
@@ -309,9 +299,12 @@ void HashTable<T>::print()
 {
 	for (int i = 0; i < m_size; i++)
 	{
-		if (!m_empty[i])
+		if (m_states[i] == filled)
+		//if (m_states[i] != empty)
 		{
+			std::cout << "(" << i << ") ";
 			std::cout << m_keys[i] << " : '" << m_values[i] << "'";
+			//std::cout << ((m_states[i] == filled) ? " filled" : " deleted");
 			std::cout << std::endl;
 		}
 	}
