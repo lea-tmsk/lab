@@ -42,7 +42,7 @@ int main()
 	ht1.deleteKey(666);
 	ht1.deleteKey(11);
 	ht1.deleteKey(22);
-	ht1.deleteKey(112);
+	ht1.deleteKey(122);
 
 	std::cout << "\nafter deleting:" << std::endl;
 	ht1.print();
